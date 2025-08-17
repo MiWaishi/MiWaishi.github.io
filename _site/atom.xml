@@ -4,7 +4,7 @@
  <title>Tom Preston-Werner</title>
  <link href="http://tom.preston-werner.com/atom.xml" rel="self"/>
  <link href="http://tom.preston-werner.com/"/>
- <updated>2025-08-17T22:02:58+08:00</updated>
+ <updated>2025-08-17T22:44:37+08:00</updated>
  <id>http://tom.preston-werner.com/</id>
  <author>
    <name>Tom Preston-Werner</name>
@@ -18,7 +18,7 @@
    <updated>2025-08-17T00:00:00+08:00</updated>
    <id>http://tom.preston-werner.com/2025/08/17/单调队列Monotonic Queue</id>
    <content type="html">&lt;h1 id=&quot;单调队列monotonic-queue&quot;&gt;单调队列(Monotonic Queue)&lt;/h1&gt;
-&lt;p class=&quot;meta&quot;&gt;10 Aug 2025&lt;/p&gt;
+&lt;p class=&quot;meta&quot;&gt;17 Aug 2025&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;1.简介&lt;/strong&gt;&lt;/p&gt;
 
@@ -290,7 +290,7 @@ index   1   2   3   4   5   6   7   8
    <updated>2025-08-06T00:00:00+08:00</updated>
    <id>http://tom.preston-werner.com/2025/08/06/数独优化求解Solving Sudoku From Backtracking to CSP Optimizations</id>
    <content type="html">&lt;h1 id=&quot;数独优化求解solving-sudoku-from-backtracking-to-csp-optimizations&quot;&gt;数独优化求解(Solving Sudoku, From Backtracking to CSP Optimizations)&lt;/h1&gt;
-&lt;p class=&quot;meta&quot;&gt;10 Aug 2025&lt;/p&gt;
+&lt;p class=&quot;meta&quot;&gt;6 Aug 2025&lt;/p&gt;
 
 &lt;h5 id=&quot;1introduction&quot;&gt;&lt;strong&gt;1.Introduction&lt;/strong&gt;&lt;/h5&gt;
 
