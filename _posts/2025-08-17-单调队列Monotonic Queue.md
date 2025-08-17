@@ -24,7 +24,7 @@ input
 8  3
 1  3  -1  -3  5  3  6  7
 ```
- 
+ <p></p>
 ```
 output
 min -1 -3 -3 -3  3  3
@@ -59,7 +59,8 @@ for(int i = 1; i <= n; i++) { // 求最大值
   	maxi[i] = a[q.front()];
 }
 ```
-
+ <p></p>
+ <p></p>
 ```c++
 for(int i = 1; i <= n; i++) { // 求最小值
 		while(!q.empty() && q.front() < i - k + 1)
@@ -104,7 +105,7 @@ a = 5, b = 4, n = 2
 2   10  2   1
 1   2   2   2
 ```
-
+ <p></p>
 ```
 output
 1
