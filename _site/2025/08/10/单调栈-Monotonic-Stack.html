@@ -40,9 +40,7 @@ var WRInitTime=(new Date()).getTime();
 <h1 id="单调栈-monotonic-stack">单调栈 (Monotonic Stack)</h1>
 <p class="meta">10 Aug 2025</p>
 
-<h2 id="单调栈">单调栈</h2>
-
-<h5 id="简介"><strong>简介</strong></h5>
+<p><strong>1.简介</strong></p>
 
 <ul>
   <li>单调栈 (Monotonic Stack) 是一种解题工具，而非算法。</li>
@@ -50,9 +48,9 @@ var WRInitTime=(new Date()).getTime();
   <li>其模版问题是：对于数列中某元素，找出其左边/右边<strong>第一个</strong>比它大/小的元素的<strong>下标</strong>。</li>
 </ul>
 
-<h5 id="实现"><strong>实现</strong></h5>
+<p><strong>2.实现</strong></p>
 
-<h6 id="模版洛谷p5788"><strong>模版：</strong><a href="https://www.luogu.com.cn/problem/P5788">洛谷P5788</a></h6>
+<p><strong>模版：</strong><a href="https://www.luogu.com.cn/problem/P5788">洛谷P5788</a></p>
 
 <p>对于长度为n的序列a，定义f(i)为第i个元素后第一个大于a[i]的元素的下标。若不存在，则f(i)为0。求f(1~n),
 \(数据范围:n \leq 3 \times 10^6\)
@@ -136,13 +134,13 @@ index: 1 2 3 4 5
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="p">[</span><span class="n">stk</span><span class="p">.</span><span class="n">back</span><span class="p">()]</span>
 </code></pre></div></div>
 
-<p><strong>变形:</strong></p>
+<p><strong>3.变形</strong></p>
 
-<p>Example 1: <a href="https://www.luogu.com.cn/problem/P2866">洛谷P2866</a></p>
+<p><strong>Example 1</strong>: <a href="https://www.luogu.com.cn/problem/P2866">洛谷P2866</a></p>
 
 <p>这题是一个简单的变形。所求的问题可简化为：找出每个元素左边第一个比它大的元素。对于所有的元素，以目标元素为左端点，当前元素为右端点，求区间长度之和。</p>
 
-<p>Example 2: <a href="https://www.luogu.com.cn/problem/U478856">洛谷U478856</a></p>
+<p><strong>Example 2</strong>: <a href="https://www.luogu.com.cn/problem/U478856">洛谷U478856</a></p>
 
 <p>题意：对于一个长度为n的序列，求出所有区间的最大值的和。</p>
 
@@ -156,14 +154,14 @@ index   1   2   3   4   5   6   7   8
 </code></pre></div></div>
 <p>比如，在此数列中，对于元素7，在跑两遍单调栈后，我们得到对于7的最大区间，左端点为8，右端点为9 (不包括端点)。    那么c[i] = (i - l) * (r - i)。其中，对于所有可能区间，i - l 表示了左端点的所有可能，r - i表示了右端点的算有可能。此公式可理解为一个排列问题。具体来看，对于7，c[7] = (5 - 2) * (7 - 5)  = 6。</p>
 
-<p>Example 3: <a href="https://www.luogu.com.cn/problem/B4273">洛谷B4273</a></p>
+<p><strong>Example 3</strong> <a href="https://www.luogu.com.cn/problem/B4273">洛谷B4273</a></p>
 
-<p>此为一道单调栈的二维变形。如下图，每个长方形的底一样长，高不同，要找出一个面积最大的矩形。输入每个矩形的高。</p>
+<p>此为一道单调栈的二维变形。如下图，每个长方形的底一样长，高不同，要找出一个面积最大的矩形，输入每个矩形的高。</p>
 
-<!--![tu1](/images/monostack.jpg "tu1")-->
+<!--![tu1](images/monostack.jpg "tu1")-->
 
 <div style="text-align: center;">
-  <img src="/images/monostack.jpg" alt="示例图片" style="display: block; margin: 0 auto;" />
+  <img src="/images/monostack/monostack.jpg" alt="示例图片" style="display: block; margin: 0 auto;zoom:20%;" />
 </div>
 
 <p>此题和上题有异曲同工之妙。对于当前标红的纸条，向左右延伸，直到不能再延伸，以这种方式找到一个矩形，如图中用蓝框圈起的矩形。令此纸条高度为h，那么就找到了高度为h的矩形的面积的最大值。尝试所有的每个纸条的高度，求max，则能找到答案。</p>
@@ -182,11 +180,9 @@ index   1   2   3   4   5   6   7   8
   <h2>Related Posts</h2>
   <ul class="posts">
     
-      <li><span>08 Aug 2025</span> &raquo; <a href="/2025/08/08/no-1.html">数独优化(Sudoku Optimization)</a></li>
+      <li><span>17 Aug 2025</span> &raquo; <a href="/2025/08/17/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97Monotonic-Queue.html">单调队列(Monotonic Queue)</a></li>
     
-      <li><span>17 Nov 2008</span> &raquo; <a href="/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha.html">Blogging Like a Hacker,haha haha haha haha haha</a></li>
-    
-      <li><span>17 Nov 2008</span> &raquo; <a href="/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy).html">Blogging Like a Hacker,haha haha haha haha haha</a></li>
+      <li><span>06 Aug 2025</span> &raquo; <a href="/2025/08/06/%E6%95%B0%E7%8B%AC%E4%BC%98%E5%8C%96%E6%B1%82%E8%A7%A3Solving-Sudoku-From-Backtracking-to-CSP-Optimizations.html">数独优化求解(Solving Sudoku, From Backtracking to CSP Optimizations)</a></li>
     
   </ul>
 </div>
@@ -198,7 +194,7 @@ index   1   2   3   4   5   6   7   8
         <br />
         If you have the same hobbies, you can contact me. 
         <br />
-        xstchen@outlook.com
+        stanchenx@outlook.com
       </p>
     </div>
     <div class="contact">

@@ -7,19 +7,15 @@ title: 单调栈 (Monotonic Stack)
 ================
 <p class="meta">10 Aug 2025</p>
 
-
-
-## 单调栈
-
-##### **简介**
+**1.简介**
 
 - 单调栈 (Monotonic Stack) 是一种解题工具，而非算法。
 - 单调栈在复杂题目中，不会单独出现，一般用于完成部分功能，如处理数据。
 - 其模版问题是：对于数列中某元素，找出其左边/右边**第一个**比它大/小的元素的**下标**。
 
-##### **实现**
+**2.实现**
 
-###### **模版：**[洛谷P5788](https://www.luogu.com.cn/problem/P5788)
+**模版：**[洛谷P5788](https://www.luogu.com.cn/problem/P5788)
 
 对于长度为n的序列a，定义f(i)为第i个元素后第一个大于a[i]的元素的下标。若不存在，则f(i)为0。求f(1~n),
 $$
@@ -103,13 +99,13 @@ index: 1 2 3 4 5
 a[stk.back()]
 ```
 
-**变形:**
+**3.变形**
 
-Example 1: [洛谷P2866](https://www.luogu.com.cn/problem/P2866)
+**Example 1**: [洛谷P2866](https://www.luogu.com.cn/problem/P2866)
 
 这题是一个简单的变形。所求的问题可简化为：找出每个元素左边第一个比它大的元素。对于所有的元素，以目标元素为左端点，当前元素为右端点，求区间长度之和。
 
-Example 2: [洛谷U478856](https://www.luogu.com.cn/problem/U478856)
+**Example 2**: [洛谷U478856](https://www.luogu.com.cn/problem/U478856)
 
 题意：对于一个长度为n的序列，求出所有区间的最大值的和。
 
@@ -126,14 +122,14 @@ index   1   2   3   4   5   6   7   8
 ```
 比如，在此数列中，对于元素7，在跑两遍单调栈后，我们得到对于7的最大区间，左端点为8，右端点为9 (不包括端点)。    那么c[i] = (i - l) * (r - i)。其中，对于所有可能区间，i - l 表示了左端点的所有可能，r - i表示了右端点的算有可能。此公式可理解为一个排列问题。具体来看，对于7，c[7] = (5 - 2) * (7 - 5)  = 6。
 
-Example 3: [洛谷B4273](https://www.luogu.com.cn/problem/B4273)
+**Example 3** [洛谷B4273](https://www.luogu.com.cn/problem/B4273)
 
-此为一道单调栈的二维变形。如下图，每个长方形的底一样长，高不同，要找出一个面积最大的矩形。输入每个矩形的高。
+此为一道单调栈的二维变形。如下图，每个长方形的底一样长，高不同，要找出一个面积最大的矩形，输入每个矩形的高。
 
-<!--![tu1](/images/monostack.jpg "tu1")-->
+<!--![tu1](images/monostack.jpg "tu1")-->
 
 <div style="text-align: center;">
-  <img src="/images/monostack.jpg" alt="示例图片" style="display: block; margin: 0 auto;">
+  <img src="/images/monostack/monostack.jpg" alt="示例图片" style="display: block; margin: 0 auto;zoom:20%;">
 </div>
 
 此题和上题有异曲同工之妙。对于当前标红的纸条，向左右延伸，直到不能再延伸，以这种方式找到一个矩形，如图中用蓝框圈起的矩形。令此纸条高度为h，那么就找到了高度为h的矩形的面积的最大值。尝试所有的每个纸条的高度，求max，则能找到答案。

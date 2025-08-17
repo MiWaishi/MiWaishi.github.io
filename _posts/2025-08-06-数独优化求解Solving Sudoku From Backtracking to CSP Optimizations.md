@@ -1,0 +1,155 @@
+---
+layout: post
+title: 数独优化求解(Solving Sudoku, From Backtracking to CSP Optimizations) 
+---
+
+{{ page.title }}
+================
+<p class="meta">10 Aug 2025</p>
+
+##### **1.Introduction**
+
+The inspiration for this project arose from a lesson on solving logic puzzles, such as Einstein's Riddle, using Prolog. The underlying solution approach for Einstein's Riddle fundamentally relies on search and backtracking algorithms. This experience led to the realization that similar methodologies could be effectively applied to other logic puzzles, including Sudoku. Furthermore, it highlighted the potential for algorithmic improvements, particularly in reducing time complexity. This project explores this potential by implementing and comparing two solution strategies for Sudoku: a basic backtracking algorithm and an optimized approach incorporating CSP (Constraint Satisfaction Problem) techniques.
+
+##### **2.Background**
+
+**Sudoku**
+
+As a globally popular logic puzzle, Sudoku is governed by seemingly simple rules: the objective is to fill a 9×9 grid so that each digit from 1 to 9 appears exactly once in every row, column, and 3×3 subgrid. Despite their simplicity, these combinatorial uniqueness constraints define a challenging problem space, classifying Sudoku as a Constraint Satisfaction Problem (CSP), in which valid solutions must simultaneously satisfy all given constraints.
+
+**CSP Optimization**
+
+CSP optimization refers to a set of techniques designed to enhance the efficiency of solving Constraint Satisfaction Problems. A CSP is defined by three fundamental components: variables, domains, and constraints. By leveraging strategies such as the Minimum Remaining Values (MRV) heuristic and constraint propagation, CSP techniques effectively reduce the search space and eliminate redundant computations, leading to faster and more efficient solutions.
+
+CSP optimization techniques improve solving efficiency by significantly reducing computational complexity. A Constraint Satisfaction Problem (CSP) is defined by three key components: variables (e.g., empty cells in a Sudoku grid), domains (e.g., the set of possible digits {1–9} for each cell), and constraints (e.g., the requirement that each digit appears exactly once in every row, column, and 3×3 subgrid).
+
+A common CSP optimization is achieved through two core strategies. First, the Minimum Remaining Values (MRV) heuristic guides the search by selecting the variable with the fewest valid values remaining, thereby increasing the likelihood of early detection of conflicts and pruning futile branches sooner. Second, constraint propagation dynamically removes inconsistent values from the domains of related variables after each assignment, effectively narrowing the search space and preventing invalid configurations. Together, these techniques greatly enhance the performance of CSP solvers.
+
+##### **3.Methodology**
+
+**Backtracking**
+
+Backtracking is a fundamental depth-first search (DFS) algorithm widely used in decision-based problem solving. It systematically explores potential solutions by incrementally building candidates and backtracking (reversing previous choices whenever a partial assignment violates the problem's constraints). The core procedure follows these steps:
+
+1. Stepwise Assignment: Construct a solution by assigning values to variables one at a time, in a predetermined order.
+2. Consistency Validation: After each assignment, check whether the current state satisfies all constraints. 
+3. Backtracking Trigger: If no valid value can be assigned to the current variable, undo the most recent assignment and explore alternative values for that variable. 
+4. Termination: Repeat this process until either a complete and valid solution is found or all possible assignments have been exhausted.
+
+Due to its systematic exploration and pruning of invalid paths, backtracking is particularly well-suited for problems involving combinations, permutations, and constraint satisfaction, including Sudoku.
+
+In the context of Sudoku, the algorithm begins at the top-left cell of the 9×9 grid and proceeds row by row, from left to right and top to bottom. For each empty cell, it attempts digits from 1 to 9 in sequence, checking whether each candidate value adheres to the Sudoku constraints (i.e., no duplicates in the corresponding row, column, and 3×3 subgrid). If no valid digit can be placed in a cell, the algorithm concludes that an earlier assignment must be incorrect and backtracks to revise previous choices. This iterative process continues until a complete and consistent solution is achieved.
+
+**Disadvantages of Backtracking**
+
+Although backtracking solves Sudoku puzzles in a straightforward and intuitive manner, it suffers from a critical drawback: an extremely high time complexity of O(9ⁿ), where n is the number of empty cells. This inefficiency arises because the algorithm does not fully leverage the inherent structure of Sudoku’s constraints. Specifically, backtracking only applies the rules—such as the requirement for unique digits in each row, column, and 3×3 subgrid—to validate a guess after it has been made, rather than using them proactively to guide and prune the search space. 
+
+For example, if the digit 4 already appears in row 1, it is impossible for 4 to appear again in any other empty cell of that row. However, standard backtracking does not eliminate 4 from the candidate list for those cells in advance, potentially leading to redundant and invalid guesses. By failing to incorporate constraint information earlier in the process, the algorithm wastes time exploring paths that could have been ruled out immediately. This highlights a key opportunity for optimization through more intelligent use of the puzzle’s constraints during the search.
+
+**Introducing MRV and Constraints Propagation**
+
+To enhance the efficiency of backtracking, we incorporate Constraint Satisfaction Problem (CSP) optimization techniques. First, we apply the Minimum Remaining Values (MRV) heuristic, which selects the next empty cell to assign based on the fewest number of valid candidate values. This strategy helps to quickly expose dead ends and prune unproductive branches of the search tree early. Second, we implement constraint propagation, which actively enforces Sudoku’s core constraints, namely, the requirement that each digit from 1 to 9 must appear exactly once in every row, column, and 3×3 subgrid. As values are assigned, this technique dynamically eliminates invalid candidates from the domains of related unassigned cells, thereby reducing the search space and minimizing the number of futile guesses. Together, these optimizations significantly improve the solver’s performance by making the search process more informed and efficient.
+
+##### **4.Implementation**
+
+**Backtracking Algorithm Implementation**
+
+<div style="text-align: center;">
+  <img src="/images/monoqueue/flow.png" alt="图片1" style="display: block; margin: 0 auto;zoom:100%;">
+</div>
+
+The backtracking implementation consists of a main for loop that systematically fills empty cells while maintaining Sudoku constraints. When a cell cannot be filled with any valid number, the algorithm backtracks to the previous modifiable cell and tries the next available number.
+
+
+ The following code shows how the backtracking algorithm is implemented. 
+ 
+<div style="text-align: center;">
+  <img src="/images/monoqueue/algo1.png" alt="图片2" style="display: block; margin: 0 auto; zoom:100%;">
+</div>
+
+The following code shows how the function, solve(), is called in the main function. 
+
+<div style="text-align: center;">
+  <img src="/images/monoqueue/main.png" alt="图片3" style="display: block; margin: 0 auto; zoom:50%;">
+</div>
+
+
+**MRV and Constraint Propagation Implementation**
+
+<div style="text-align: center;">
+  <img src="/images/monoqueue/flow2.png" alt="图片4" style="display: block; margin: 0 auto; zoom:100%;">
+</div>
+
+Building upon the backtracking logic and code, the version incorporating Constraint Propagation and MRV has added two functions to optimize the algorithm. It first calls the propagate_constraints () function to eliminate scenarios with obvious contradictions. Then, it invokes the find_mrv_cell () function to ensure the next step is the one most likely to either advance the solution or detect conflicts. When searching for values for an empty cell, only numbers recorded in the candidate array (i.e., valid possibilities) are tried, rather than sequentially testing numbers from 1 to 9. If a cell cannot be filled with any valid number, the algorithm backtracks to the previous modifiable cell and attempts the next available number.
+
+The following code shows how the Propagate Constraints and MRV Version is implemented.
+
+<div style="text-align: center;">
+  <img src="/images/monoqueue/algo2.png" alt="图片5" style="display: block; margin: 0 auto; max-width: 550px; max-height: 350px;">
+</div>
+##### **5.Experimental evaluation**
+
+<div class="three-line-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Easy</th>
+        <th>Medium</th>
+        <th>Hard</th>
+        <th>Harder</th>
+        <th>Very hard</th>
+        <th>Super hard</th>
+        <th>Impossible</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Backtracking</td>
+        <td>268.00</td>
+        <td>399.57</td>
+        <td>10901.7</td>
+        <td>935.86</td>
+        <td>1067.29</td>
+        <td>1681.29</td>
+        <td>7703.14</td>
+      </tr>
+      <tr>
+        <td>MRV & Propagate Constraints</td>
+        <td>171.50</td>
+        <td>206.43</td>
+        <td>731.43</td>
+        <td>163.71</td>
+        <td>287.14</td>
+        <td>123.57</td>
+        <td>5153.14</td>
+      </tr>
+      <tr>
+        <td>Speed up</td>
+        <td>1.56</td>
+        <td>1.94</td>
+        <td>14.90</td>
+        <td>5.72</td>
+        <td>3.72</td>
+        <td>13.61</td>
+        <td>1.49</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+<div style="text-align: center;">
+  <img src="/images/monoqueue/zhu.png" alt="图片5" style="display: block; margin: 0 auto; max-width: 500px; max-height: 300px;">
+</div>
+
+As shown in Figure 1, the new version has improved the algorithm's performance by approximately 1.5 to 15 times through optimizations based on the Minimum Remaining Value (MRV) and constraint propagation.
+
+As shown in Figure 2, regarding backtracking, except for the "Hard" difficulty level, its processing time for Sudoku puzzles shows an upward trend with the increase in difficulty. As for the optimized version, except for the "Impossible" difficulty level, its processing time tends to be stable.
+
+However, as shown in Figure 2, the data of the "Hard" difficulty level does not conform to the pattern in the graph. Initially, I controlled the difficulty of Sudoku by limiting the number of known numbers. But in subsequent experiments, the obtained experimental data did not conform to basic logic, and it was then discovered that the number of known numbers cannot accurately represent the difficulty of Sudoku. Therefore, I speculate that the difficulty of Sudoku may also be determined by factors such as the arrangement of numbers. In addition, a specific algorithm may be good at or not good at handling a certain type of number arrangement. Thus, the abnormal data in the "Hard" difficulty level may be caused by the above-mentioned reasons.
+
+##### **6.Conclusion**
+
+This study demonstrates that integrating CSP optimization techniques (MRV and constraint propagation) can significantly enhance the efficiency of Sudoku-solving algorithms, achieving a speedup of 1.5 to 15 times. The backtracking algorithm exhibits inconsistent performance across different difficulty levels, whereas the optimized version maintains relatively stable processing efficiency. It is also confirmed that Sudoku difficulty is not solely determined by the number of known digits but is also affected by factors such as number arrangement, which warrants further exploration.

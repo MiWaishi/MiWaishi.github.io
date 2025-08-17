@@ -46,9 +46,32 @@ a:visited {
   color: #a0a;
 }
 
+.three-line-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.three-line-table th, .three-line-table td {
+  padding: 8px;
+  text-align: left;
+}
+
+/* 表头上方的线 */
+.three-line-table thead {
+  border-top: 1px solid #000; /* 调整为 1px */
+  border-bottom: 1px solid #000; /* 调整为 1px */
+}
+
+/* 表身下方的线 */
+.three-line-table tbody {
+  border-bottom: 1px solid #000; /* 调整为 1px */
+}
+
 table {
   font-size: inherit;
-  font: 100%;
+  font: 80%;
+  font-size: 12px; /* 调整表格的字体大小 */
 }
 
 /*****************************************************************************/
@@ -87,6 +110,7 @@ ul.posts {
 }
 
 .title {
+  font-size: 110%;
   color: #a00;
   font-weight: bold;
   margin-bottom: 2em;
@@ -181,7 +205,7 @@ ul.posts {
 
   #post img {
     /*max-width: 42em;*/
-    max-width: 25%; /* 缩小到原来的 30% */
+    max-width: 60%; /* 缩小到原来的 30% */
     height: auto; /* 保持比例 */
     margin: 1em auto; /* 居中显示 */
     

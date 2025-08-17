@@ -1,9 +1,125 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-08-17T09:54:37+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">sun Blog Title</title><subtitle>A brief description of your blog.</subtitle><author><name>Your Name</name><email>your-email@example.com</email></author><entry><title type="html">单调栈 (Monotonic Stack)</title><link href="http://localhost:4000/2025/08/10/%E5%8D%95%E8%B0%83%E6%A0%88-Monotonic-Stack.html" rel="alternate" type="text/html" title="单调栈 (Monotonic Stack)" /><published>2025-08-10T00:00:00+08:00</published><updated>2025-08-10T00:00:00+08:00</updated><id>http://localhost:4000/2025/08/10/%E5%8D%95%E8%B0%83%E6%A0%88-Monotonic%20Stack</id><content type="html" xml:base="http://localhost:4000/2025/08/10/%E5%8D%95%E8%B0%83%E6%A0%88-Monotonic-Stack.html"><![CDATA[<h1 id="单调栈-monotonic-stack">单调栈 (Monotonic Stack)</h1>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-08-17T22:02:58+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">sun Blog Title</title><subtitle>A brief description of your blog.</subtitle><author><name>Your Name</name><email>your-email@example.com</email></author><entry><title type="html">单调队列(Monotonic Queue)</title><link href="http://localhost:4000/2025/08/17/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97Monotonic-Queue.html" rel="alternate" type="text/html" title="单调队列(Monotonic Queue)" /><published>2025-08-17T00:00:00+08:00</published><updated>2025-08-17T00:00:00+08:00</updated><id>http://localhost:4000/2025/08/17/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97Monotonic%20Queue</id><content type="html" xml:base="http://localhost:4000/2025/08/17/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97Monotonic-Queue.html"><![CDATA[<h1 id="单调队列monotonic-queue">单调队列(Monotonic Queue)</h1>
 <p class="meta">10 Aug 2025</p>
 
-<h2 id="单调栈">单调栈</h2>
+<p><strong>1.简介</strong></p>
 
-<h5 id="简介"><strong>简介</strong></h5>
+<ul>
+  <li>单调队列与单调栈相似。应先学习单调栈，再学习单调队列。</li>
+  <li>单调队列保持单调的特性，可以单调递增，也可以单调递减。</li>
+  <li>单调队列在动态规划中用于优化状态转移，或处理数据流中的实时最值问题。</li>
+</ul>
+
+<p><strong>2.实现</strong></p>
+
+<p>模版：<a href="https://www.luogu.com.cn/problem/P1886">洛谷P1886</a></p>
+
+<p>对于长度为n的序列，有一个长度为k的窗口。窗口从左到右，每次滑动一个单位。求每次滑动后窗口内的最大值和最小值。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>input
+8  3
+1  3  -1  -3  5  3  6  7
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>output
+min -1 -3 -3 -3  3  3
+max  3  3  5  5  6  7
+</code></pre></div></div>
+
+<p><strong>思路：</strong></p>
+
+<ul>
+  <li>
+    <p>用一个双端队列deque来模拟窗口。因为窗口在滑动的过程中，一端进，一端出，所以选择队列。另外，队尾既需要push也需要pop，所以使用双端队列。</p>
+  </li>
+  <li>
+    <p>与单调栈相同，单调队列存入的是元素的下标。</p>
+  </li>
+  <li>
+    <p>首先考虑窗口如何滑动。窗口移动之后，在开始求最值前，要先把已经移动到窗口之外的数字从队列中去掉。我们从队尾加入元素，从队头踢出元素。若i表示当前的元素，那么当q.front() &lt; i - k + 1时，说明a.front()已经在窗口之外，应该踢出。</p>
+  </li>
+  <li>
+    <p>窗口滑动完之后，可以开始求最值。求最大值时，若队尾比当前元素小，则踢出。踢出之后，得到新的队尾，继续与当前元素比较，知道队列为空，或队尾大于等于当前元素。求最小值类似。这样是求最值的优化，和单调栈相同，没有必要把整个窗口遍历一遍。</p>
+  </li>
+  <li>
+    <p>比如，在求最大值的时候，我们维护一个从队头到队尾单调递减的队列，那么队头始终是当前元素的答案。</p>
+
+    <p>在样例中，当枚举到元素5时，队列为 [3, -1, -3] (左边为front，右边为back。队列存的是元素而不是下标，方便理解)。</p>
+
+    <p>此时判断3已经在窗口之外，所以踢出。</p>
+
+    <p>对于-1和-3，它们都比当前元素5小。由于5的存在，-1和-3对于后面的元素，不可能成为它们的答案，所以踢出。</p>
+  </li>
+</ul>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 求最大值</span>
+		<span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">q</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="n">q</span><span class="p">.</span><span class="n">front</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">-</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+			<span class="n">q</span><span class="p">.</span><span class="n">pop_front</span><span class="p">();</span>
+		<span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">q</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="n">a</span><span class="p">[</span><span class="n">q</span><span class="p">.</span><span class="n">back</span><span class="p">()]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+			<span class="n">q</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span>
+		<span class="n">q</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+  	<span class="n">maxi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">q</span><span class="p">.</span><span class="n">front</span><span class="p">()];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 求最小值</span>
+		<span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">q</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="n">q</span><span class="p">.</span><span class="n">front</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">-</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+			<span class="n">q</span><span class="p">.</span><span class="n">pop_front</span><span class="p">();</span>
+		<span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">q</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="n">a</span><span class="p">[</span><span class="n">q</span><span class="p">.</span><span class="n">back</span><span class="p">()]</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+			<span class="n">q</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span>
+		<span class="n">q</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+		<span class="n">mini</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">q</span><span class="p">.</span><span class="n">front</span><span class="p">()];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>3.变形</strong></p>
+
+<p><strong>example 1</strong>: <a href="https://www.luogu.com.cn/problem/P1714">洛谷P1714</a> 求最大字段和 (给定了子段的长度为m)</p>
+
+<p><strong>题意：</strong>
+\(在\ p_n中，找出一个子段 [l,r]\ (r−l+1≤m)，最大化 ∑_{i=l}^{r} \  p_i\)
+与模版不同之处在于，此题需要求和，而非找到最值。因此需要使用前缀和。</p>
+
+<p>用前缀和将序列处理完成之后，得到一个sum[]的数组，因此求[l,r]区间的和，可以用sum[r]-sum[l-1]来表示。</p>
+
+<p><strong>思路：</strong></p>
+
+<ul>
+  <li>对于sum[i]，把它看作区间的右端点。遍历sum数组时，每一轮循环中i的值是确定的，那么右端点也是确定的，所以目标转移到了求左端点。</li>
+  <li>区间和表示为sum[r] - sum[l-1]，由于sum[r]是确定的，因此当sum[l-1]最小时，区间和最大。</li>
+  <li>所以可以在每一轮循环中，用单调队列找到sum[l-1]的最小值。求sum[l-1]的最小值，已经和单调队列模版没有区别。相当于是一个长度为n的序列 (sum数组)，窗口长度为m，找到每个窗口的最小值。</li>
+</ul>
+
+<p><strong>example 2</strong>: <a href="https://www.luogu.com.cn/problem/P2216">洛谷P2216</a> (二维)</p>
+
+<p><strong>题意：</strong></p>
+
+<p>有一个 <em>a</em>×<em>b</em> 的整数组成的矩阵，现请你从中找出一个 <em>n</em>×<em>n</em> 的正方形区域，使得该区域所有数中的最大值和最小值的差最小。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>input
+a = 5, b = 4, n = 2
+1   2   5   6
+0   17  16  0
+16  17  2   1
+2   10  2   1
+1   2   2   2
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>output
+1
+</code></pre></div></div>
+
+<p><strong>思路：</strong></p>
+
+<ul>
+  <li>这道题也是求区间内的最值，只不过是二维的，那么可以试着将二维转化为一维。</li>
+  <li>令 c [i] [j]表示在 (i, j) 所在的竖列中，以 (i, j)为起点，向上的一个长度为n的序列的最大值。如 c[5] [2] = 10，因为它所在的数列为 [2, 10]。</li>
+  <li>那么，max(c[i] [j], c[i] [j+1], c[i] [j+2] …….. c[i] [j + n -1]) 就是一个以 (i, j)为左下方顶点的 <em>n</em>×<em>n</em> 矩形中的最大值。求最小值的方法一样，用d[i] [j]表示。</li>
+  <li>用单调队列求数组c和数组d，和求滑动窗口中的最值无异。</li>
+  <li>处理完数组c和数组d之后，再枚举所有的矩形即可。</li>
+</ul>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[单调队列(Monotonic Queue) 10 Aug 2025]]></summary></entry><entry><title type="html">单调栈 (Monotonic Stack)</title><link href="http://localhost:4000/2025/08/10/%E5%8D%95%E8%B0%83%E6%A0%88-Monotonic-Stack.html" rel="alternate" type="text/html" title="单调栈 (Monotonic Stack)" /><published>2025-08-10T00:00:00+08:00</published><updated>2025-08-10T00:00:00+08:00</updated><id>http://localhost:4000/2025/08/10/%E5%8D%95%E8%B0%83%E6%A0%88-Monotonic%20Stack</id><content type="html" xml:base="http://localhost:4000/2025/08/10/%E5%8D%95%E8%B0%83%E6%A0%88-Monotonic-Stack.html"><![CDATA[<h1 id="单调栈-monotonic-stack">单调栈 (Monotonic Stack)</h1>
+<p class="meta">10 Aug 2025</p>
+
+<p><strong>1.简介</strong></p>
 
 <ul>
   <li>单调栈 (Monotonic Stack) 是一种解题工具，而非算法。</li>
@@ -11,9 +127,9 @@
   <li>其模版问题是：对于数列中某元素，找出其左边/右边<strong>第一个</strong>比它大/小的元素的<strong>下标</strong>。</li>
 </ul>
 
-<h5 id="实现"><strong>实现</strong></h5>
+<p><strong>2.实现</strong></p>
 
-<h6 id="模版洛谷p5788"><strong>模版：</strong><a href="https://www.luogu.com.cn/problem/P5788">洛谷P5788</a></h6>
+<p><strong>模版：</strong><a href="https://www.luogu.com.cn/problem/P5788">洛谷P5788</a></p>
 
 <p>对于长度为n的序列a，定义f(i)为第i个元素后第一个大于a[i]的元素的下标。若不存在，则f(i)为0。求f(1~n),
 \(数据范围:n \leq 3 \times 10^6\)
@@ -97,13 +213,13 @@ index: 1 2 3 4 5
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="p">[</span><span class="n">stk</span><span class="p">.</span><span class="n">back</span><span class="p">()]</span>
 </code></pre></div></div>
 
-<p><strong>变形:</strong></p>
+<p><strong>3.变形</strong></p>
 
-<p>Example 1: <a href="https://www.luogu.com.cn/problem/P2866">洛谷P2866</a></p>
+<p><strong>Example 1</strong>: <a href="https://www.luogu.com.cn/problem/P2866">洛谷P2866</a></p>
 
 <p>这题是一个简单的变形。所求的问题可简化为：找出每个元素左边第一个比它大的元素。对于所有的元素，以目标元素为左端点，当前元素为右端点，求区间长度之和。</p>
 
-<p>Example 2: <a href="https://www.luogu.com.cn/problem/U478856">洛谷U478856</a></p>
+<p><strong>Example 2</strong>: <a href="https://www.luogu.com.cn/problem/U478856">洛谷U478856</a></p>
 
 <p>题意：对于一个长度为n的序列，求出所有区间的最大值的和。</p>
 
@@ -117,14 +233,14 @@ index   1   2   3   4   5   6   7   8
 </code></pre></div></div>
 <p>比如，在此数列中，对于元素7，在跑两遍单调栈后，我们得到对于7的最大区间，左端点为8，右端点为9 (不包括端点)。    那么c[i] = (i - l) * (r - i)。其中，对于所有可能区间，i - l 表示了左端点的所有可能，r - i表示了右端点的算有可能。此公式可理解为一个排列问题。具体来看，对于7，c[7] = (5 - 2) * (7 - 5)  = 6。</p>
 
-<p>Example 3: <a href="https://www.luogu.com.cn/problem/B4273">洛谷B4273</a></p>
+<p><strong>Example 3</strong> <a href="https://www.luogu.com.cn/problem/B4273">洛谷B4273</a></p>
 
-<p>此为一道单调栈的二维变形。如下图，每个长方形的底一样长，高不同，要找出一个面积最大的矩形。输入每个矩形的高。</p>
+<p>此为一道单调栈的二维变形。如下图，每个长方形的底一样长，高不同，要找出一个面积最大的矩形，输入每个矩形的高。</p>
 
-<!--![tu1](/images/monostack.jpg "tu1")-->
+<!--![tu1](images/monostack.jpg "tu1")-->
 
 <div style="text-align: center;">
-  <img src="/images/monostack.jpg" alt="示例图片" style="display: block; margin: 0 auto;" />
+  <img src="/images/monostack/monostack.jpg" alt="示例图片" style="display: block; margin: 0 auto;zoom:20%;" />
 </div>
 
 <p>此题和上题有异曲同工之妙。对于当前标红的纸条，向左右延伸，直到不能再延伸，以这种方式找到一个矩形，如图中用蓝框圈起的矩形。令此纸条高度为h，那么就找到了高度为h的矩形的面积的最大值。尝试所有的每个纸条的高度，求max，则能找到答案。</p>
@@ -134,950 +250,150 @@ index   1   2   3   4   5   6   7   8
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3 2 1 4 5 2
 </code></pre></div></div>
 
-<p>对于其他二维变形，可以把此题作为基础，将其他二维变形往这道题上去套，可能可以找到思路。</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[单调栈 (Monotonic Stack) 10 Aug 2025]]></summary></entry><entry><title type="html">数独优化(Sudoku Optimization)</title><link href="http://localhost:4000/2025/08/08/no-1.html" rel="alternate" type="text/html" title="数独优化(Sudoku Optimization)" /><published>2025-08-08T00:00:00+08:00</published><updated>2025-08-08T00:00:00+08:00</updated><id>http://localhost:4000/2025/08/08/no%201-</id><content type="html" xml:base="http://localhost:4000/2025/08/08/no-1.html"><![CDATA[<h1 id="数独优化sudoku-optimization">数独优化(Sudoku Optimization)</h1>
-
-<p class="meta">18 Oct 2008 - San Francisco</p>
-
-<p>简介
-单调栈 (Monotonic Stack) 是⼀种解题⼯具，⽽⾮算法。
-单调栈在复杂题⽬中，不会单独出现，⼀般⽤于完成部分功能，如处理数据。
-其模版问题是：对于数列中某元素，找出其左边/右边第⼀个⽐它⼤/⼩的元素的下标。
-实现
-模版：洛⾕P5788
-对于长度为n的序列a，定义f(i)为第i个元素后第⼀个⼤于a[i]的元素的下标。若不存在，则f(i)为0。求f(1~n).</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[数独优化(Sudoku Optimization) 18 Oct 2008 - San Francisco 简介 单调栈 (Monotonic Stack) 是⼀种解题⼯具，⽽⾮算法。 单调栈在复杂题⽬中，不会单独出现，⼀般⽤于完成部分功能，如处理数据。 其模版问题是：对于数列中某元素，找出其左边/右边第⼀个⽐它⼤/⼩的元素的下标。 实现 模版：洛⾕P5788 对于长度为n的序列a，定义f(i)为第i个元素后第⼀个⼤于a[i]的元素的下标。若不存在，则f(i)为0。求f(1~n).]]></summary></entry><entry><title type="html">Blogging Like a Hacker,haha haha haha haha haha</title><link href="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-2).html" rel="alternate" type="text/html" title="Blogging Like a Hacker,haha haha haha haha haha" /><published>2008-11-17T00:00:00+08:00</published><updated>2008-11-17T00:00:00+08:00</updated><id>http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha%20(Copy%202)</id><content type="html" xml:base="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-2).html"><![CDATA[<h1 id="blogging-like-a-hackerhaha-haha-haha-haha-haha">Blogging Like a Hacker,haha haha haha haha haha</h1>
-
-<p class="meta">17 Nov 2008 - San Francisco</p>
-
-<p>Back in 2000, when I thought I was going to be a professional writer, I spent
-hours a day on LiveJournal doing writing practice with other aspiring poets and
-authors. Since then I’ve blogged at three different domains about web standards,
-print design, photography, Flash, illustration, information architecture,
-ColdFusion, package management, PHP, CSS, advertising, Ruby, Rails, and Erlang.</p>
-
-<p>I love writing. I get a kick out of sharing my thoughts with others. The act of
-transforming ideas into words is an amazingly efficient way to solidify and
-refine your thoughts about a given topic. But as much as I enjoy blogging, I
-seem to be stuck in a cycle of quitting and starting over. Before starting the
-current iteration, I resolved to do some introspection to determine the factors
-that were leading to this destructive pattern.</p>
-
-<p>I already knew a lot about what I <em>didn’t</em> want. I was tired of complicated
-blogging engines like WordPress and Mephisto. I wanted to write great posts, not
-style a zillion template pages, moderate comments all day long, and constantly
-lag behind the latest software release. Something like Posterous looked
-attractive, but I wanted to style my blog, and it needed to be hosted at the
-domain of my choosing. For the same reason, other hosted sites (wordpress.com,
-blogger.com) were disqualified. There are a few people directly using GitHub as
-a blog (which is very cool), but that’s a bit too much of an impedance mismatch
-for my tastes.</p>
-
-<p>On Sunday, October 19th, I sat down in my San Francisco apartment with a glass
-of apple cider and a clear mind. After a period of reflection, I had an idea.
-While I’m not specifically trained as an author of prose, I <em>am</em> trained as an
-author of code. What would happen if I approached blogging from a software
-development perspective? What would that look like?</p>
-
-<p>First, all my writing would be stored in a Git repository. This would ensure
-that I could try out different ideas and explore a variety of posts all from the
-comfort of my preferred editor and the command line. I’d be able to publish a
-post via a simple deploy script or post-commit hook. Complexity would be kept to
-an absolute minimum, so a static site would be preferable to a dynamic site that
-required ongoing maintenance. My blog would need to be easily customizable;
-coming from a graphic design background means I’ll always be tweaking the site’s
-appearance and layout.</p>
-
-<p>Over the last month I’ve brought these concepts to fruition and I’m pleased to
-announce <a href="http://github.com/mojombo/jekyll">Jekyll</a>. Jekyll is a simple, blog
-aware, static site generator. It takes a template directory (representing the
-raw form of a website), runs it through Textile and Liquid converters, and spits
-out a complete, static website suitable for serving with Apache or your favorite
-web server. If you’re reading this on the website
-(http://tom.preston-werner.com), you’re seeing a Jekyll generated blog!</p>
-
-<p>To understand how this all works, open up my <a href="http://github.com/mojombo/tpw">TPW</a>
-repo in a new browser window. I’ll be referencing the code there.</p>
-
-<p>Take a look at
-<a href="http://github.com/mojombo/tpw/tree/master/index.html">index.html</a>. This file
-represents the homepage of the site. At the top of the file is a chunk of YAML
-that contains metadata about the file. This data tells Jekyll what layout to
-give the file, what the page’s title should be, etc. In this case, I specify
-that the “default” template should be used. You can find the layout files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts">_layouts</a> directory. If you
-open
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts/default.html">default.html</a>
-you can see that the homepage is constructed by wrapping index.html with this
-layout.</p>
-
-<p>You’ll also notice Liquid templating code in these files.
-<a href="http://www.liquidmarkup.org/">Liquid</a> is a simple, extensible templating
-language that makes it easy to embed data in your templates. For my homepage I
-wanted to have a list of all my blog posts. Jekyll hands me a Hash containing
-various data about my site. A reverse chronological list of all my blog posts
-can be found in <code>site.posts</code>. Each post, in turn, contains various
-fields such as <code>title</code> and <code>date</code>.</p>
-
-<p>Jekyll gets the list of blog posts by parsing the files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts">_posts</a> directory. Each post’s
-filename contains the publishing date and slug (what shows up in the URL) that
-the final HTML file should have. Open up the file corresponding to this blog
-post:
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile">2008-11-17-blogging-like-a-hacker.textile</a>.
-GitHub renders textile files by default, so to better understand the file, click
-on the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile?raw=true">raw</a>
-view to see the original file. Here I’ve specified the <code>post</code> layout.
-If you look at that file you’ll see an example of a nested layout. Layouts can
-contain other layouts allowing you a great deal of flexibility in how pages are
-assembled. In my case I use a nested layout in order to show related posts for
-each blog entry. The YAML also specifies the post’s title which is then embedded
-in the post’s body via Liquid.</p>
-
-<p>Posts are handled in a special way by Jekyll. The date you specify in the
-filename is used to construct the URL in the generated site. This post, for
-instance, ends up at
-<code>http://tom.preston-werner.com/2008/11/17/blogging-like-a-hacker.html</code>.</p>
-
-<p>Files that do not reside in directories prefixed with an underscore are mirrored
-into a corresponding directory structure in the generated site. If a file does
-not have a YAML preface, it is not run through the Liquid interpreter. Binary
-files are copied over unmodified.</p>
-
-<p>In order to convert your raw site into the finished version, you simply run:</p>
-
-<pre class="terminal"><code>$ jekyll /path/to/raw/site
-/path/to/place/generated/site</code></pre>
-
-<p>Jekyll is still a very young project. I’ve only developed the exact
-functionality that I’ve needed. As time goes on I’d like to see the project
-mature and support additional features. If you end up using Jekyll for your own
-blog, drop me a line and let me know what you’d like to see in future versions.
-Better yet, fork the project over at GitHub and hack in the features yourself!</p>
-
-<p>I’ve been living with Jekyll for just over a month now. I love it. Driving the
-development of Jekyll based on the needs of my blog has been very rewarding. I
-can edit my posts in TextMate, giving me automatic and competent spell checking.
-I have immediate and first class access to the CSS and page templates.
-Everything is backed up on GitHub. I feel a lightness now when I’m writing a
-post. The system is simple enough that I can keep the entire conversion process
-in my head. The distance from my brain to my blog has shrunk, and, in the end, I
-think that will make me a better author.</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[Blogging Like a Hacker,haha haha haha haha haha]]></summary></entry><entry><title type="html">Blogging Like a Hacker,haha haha haha haha haha</title><link href="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-3).html" rel="alternate" type="text/html" title="Blogging Like a Hacker,haha haha haha haha haha" /><published>2008-11-17T00:00:00+08:00</published><updated>2008-11-17T00:00:00+08:00</updated><id>http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha%20(Copy%203)</id><content type="html" xml:base="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-3).html"><![CDATA[<h1 id="blogging-like-a-hackerhaha-haha-haha-haha-haha">Blogging Like a Hacker,haha haha haha haha haha</h1>
-
-<p class="meta">17 Nov 2008 - San Francisco</p>
-
-<p>Back in 2000, when I thought I was going to be a professional writer, I spent
-hours a day on LiveJournal doing writing practice with other aspiring poets and
-authors. Since then I’ve blogged at three different domains about web standards,
-print design, photography, Flash, illustration, information architecture,
-ColdFusion, package management, PHP, CSS, advertising, Ruby, Rails, and Erlang.</p>
-
-<p>I love writing. I get a kick out of sharing my thoughts with others. The act of
-transforming ideas into words is an amazingly efficient way to solidify and
-refine your thoughts about a given topic. But as much as I enjoy blogging, I
-seem to be stuck in a cycle of quitting and starting over. Before starting the
-current iteration, I resolved to do some introspection to determine the factors
-that were leading to this destructive pattern.</p>
-
-<p>I already knew a lot about what I <em>didn’t</em> want. I was tired of complicated
-blogging engines like WordPress and Mephisto. I wanted to write great posts, not
-style a zillion template pages, moderate comments all day long, and constantly
-lag behind the latest software release. Something like Posterous looked
-attractive, but I wanted to style my blog, and it needed to be hosted at the
-domain of my choosing. For the same reason, other hosted sites (wordpress.com,
-blogger.com) were disqualified. There are a few people directly using GitHub as
-a blog (which is very cool), but that’s a bit too much of an impedance mismatch
-for my tastes.</p>
-
-<p>On Sunday, October 19th, I sat down in my San Francisco apartment with a glass
-of apple cider and a clear mind. After a period of reflection, I had an idea.
-While I’m not specifically trained as an author of prose, I <em>am</em> trained as an
-author of code. What would happen if I approached blogging from a software
-development perspective? What would that look like?</p>
-
-<p>First, all my writing would be stored in a Git repository. This would ensure
-that I could try out different ideas and explore a variety of posts all from the
-comfort of my preferred editor and the command line. I’d be able to publish a
-post via a simple deploy script or post-commit hook. Complexity would be kept to
-an absolute minimum, so a static site would be preferable to a dynamic site that
-required ongoing maintenance. My blog would need to be easily customizable;
-coming from a graphic design background means I’ll always be tweaking the site’s
-appearance and layout.</p>
-
-<p>Over the last month I’ve brought these concepts to fruition and I’m pleased to
-announce <a href="http://github.com/mojombo/jekyll">Jekyll</a>. Jekyll is a simple, blog
-aware, static site generator. It takes a template directory (representing the
-raw form of a website), runs it through Textile and Liquid converters, and spits
-out a complete, static website suitable for serving with Apache or your favorite
-web server. If you’re reading this on the website
-(http://tom.preston-werner.com), you’re seeing a Jekyll generated blog!</p>
-
-<p>To understand how this all works, open up my <a href="http://github.com/mojombo/tpw">TPW</a>
-repo in a new browser window. I’ll be referencing the code there.</p>
-
-<p>Take a look at
-<a href="http://github.com/mojombo/tpw/tree/master/index.html">index.html</a>. This file
-represents the homepage of the site. At the top of the file is a chunk of YAML
-that contains metadata about the file. This data tells Jekyll what layout to
-give the file, what the page’s title should be, etc. In this case, I specify
-that the “default” template should be used. You can find the layout files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts">_layouts</a> directory. If you
-open
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts/default.html">default.html</a>
-you can see that the homepage is constructed by wrapping index.html with this
-layout.</p>
-
-<p>You’ll also notice Liquid templating code in these files.
-<a href="http://www.liquidmarkup.org/">Liquid</a> is a simple, extensible templating
-language that makes it easy to embed data in your templates. For my homepage I
-wanted to have a list of all my blog posts. Jekyll hands me a Hash containing
-various data about my site. A reverse chronological list of all my blog posts
-can be found in <code>site.posts</code>. Each post, in turn, contains various
-fields such as <code>title</code> and <code>date</code>.</p>
-
-<p>Jekyll gets the list of blog posts by parsing the files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts">_posts</a> directory. Each post’s
-filename contains the publishing date and slug (what shows up in the URL) that
-the final HTML file should have. Open up the file corresponding to this blog
-post:
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile">2008-11-17-blogging-like-a-hacker.textile</a>.
-GitHub renders textile files by default, so to better understand the file, click
-on the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile?raw=true">raw</a>
-view to see the original file. Here I’ve specified the <code>post</code> layout.
-If you look at that file you’ll see an example of a nested layout. Layouts can
-contain other layouts allowing you a great deal of flexibility in how pages are
-assembled. In my case I use a nested layout in order to show related posts for
-each blog entry. The YAML also specifies the post’s title which is then embedded
-in the post’s body via Liquid.</p>
-
-<p>Posts are handled in a special way by Jekyll. The date you specify in the
-filename is used to construct the URL in the generated site. This post, for
-instance, ends up at
-<code>http://tom.preston-werner.com/2008/11/17/blogging-like-a-hacker.html</code>.</p>
-
-<p>Files that do not reside in directories prefixed with an underscore are mirrored
-into a corresponding directory structure in the generated site. If a file does
-not have a YAML preface, it is not run through the Liquid interpreter. Binary
-files are copied over unmodified.</p>
-
-<p>In order to convert your raw site into the finished version, you simply run:</p>
-
-<pre class="terminal"><code>$ jekyll /path/to/raw/site
-/path/to/place/generated/site</code></pre>
-
-<p>Jekyll is still a very young project. I’ve only developed the exact
-functionality that I’ve needed. As time goes on I’d like to see the project
-mature and support additional features. If you end up using Jekyll for your own
-blog, drop me a line and let me know what you’d like to see in future versions.
-Better yet, fork the project over at GitHub and hack in the features yourself!</p>
-
-<p>I’ve been living with Jekyll for just over a month now. I love it. Driving the
-development of Jekyll based on the needs of my blog has been very rewarding. I
-can edit my posts in TextMate, giving me automatic and competent spell checking.
-I have immediate and first class access to the CSS and page templates.
-Everything is backed up on GitHub. I feel a lightness now when I’m writing a
-post. The system is simple enough that I can keep the entire conversion process
-in my head. The distance from my brain to my blog has shrunk, and, in the end, I
-think that will make me a better author.</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[Blogging Like a Hacker,haha haha haha haha haha]]></summary></entry><entry><title type="html">Blogging Like a Hacker,haha haha haha haha haha</title><link href="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-4).html" rel="alternate" type="text/html" title="Blogging Like a Hacker,haha haha haha haha haha" /><published>2008-11-17T00:00:00+08:00</published><updated>2008-11-17T00:00:00+08:00</updated><id>http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha%20(Copy%204)</id><content type="html" xml:base="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-4).html"><![CDATA[<h1 id="blogging-like-a-hackerhaha-haha-haha-haha-haha">Blogging Like a Hacker,haha haha haha haha haha</h1>
-
-<p class="meta">17 Nov 2008 - San Francisco</p>
-
-<p>Back in 2000, when I thought I was going to be a professional writer, I spent
-hours a day on LiveJournal doing writing practice with other aspiring poets and
-authors. Since then I’ve blogged at three different domains about web standards,
-print design, photography, Flash, illustration, information architecture,
-ColdFusion, package management, PHP, CSS, advertising, Ruby, Rails, and Erlang.</p>
-
-<p>I love writing. I get a kick out of sharing my thoughts with others. The act of
-transforming ideas into words is an amazingly efficient way to solidify and
-refine your thoughts about a given topic. But as much as I enjoy blogging, I
-seem to be stuck in a cycle of quitting and starting over. Before starting the
-current iteration, I resolved to do some introspection to determine the factors
-that were leading to this destructive pattern.</p>
-
-<p>I already knew a lot about what I <em>didn’t</em> want. I was tired of complicated
-blogging engines like WordPress and Mephisto. I wanted to write great posts, not
-style a zillion template pages, moderate comments all day long, and constantly
-lag behind the latest software release. Something like Posterous looked
-attractive, but I wanted to style my blog, and it needed to be hosted at the
-domain of my choosing. For the same reason, other hosted sites (wordpress.com,
-blogger.com) were disqualified. There are a few people directly using GitHub as
-a blog (which is very cool), but that’s a bit too much of an impedance mismatch
-for my tastes.</p>
-
-<p>On Sunday, October 19th, I sat down in my San Francisco apartment with a glass
-of apple cider and a clear mind. After a period of reflection, I had an idea.
-While I’m not specifically trained as an author of prose, I <em>am</em> trained as an
-author of code. What would happen if I approached blogging from a software
-development perspective? What would that look like?</p>
-
-<p>First, all my writing would be stored in a Git repository. This would ensure
-that I could try out different ideas and explore a variety of posts all from the
-comfort of my preferred editor and the command line. I’d be able to publish a
-post via a simple deploy script or post-commit hook. Complexity would be kept to
-an absolute minimum, so a static site would be preferable to a dynamic site that
-required ongoing maintenance. My blog would need to be easily customizable;
-coming from a graphic design background means I’ll always be tweaking the site’s
-appearance and layout.</p>
-
-<p>Over the last month I’ve brought these concepts to fruition and I’m pleased to
-announce <a href="http://github.com/mojombo/jekyll">Jekyll</a>. Jekyll is a simple, blog
-aware, static site generator. It takes a template directory (representing the
-raw form of a website), runs it through Textile and Liquid converters, and spits
-out a complete, static website suitable for serving with Apache or your favorite
-web server. If you’re reading this on the website
-(http://tom.preston-werner.com), you’re seeing a Jekyll generated blog!</p>
-
-<p>To understand how this all works, open up my <a href="http://github.com/mojombo/tpw">TPW</a>
-repo in a new browser window. I’ll be referencing the code there.</p>
-
-<p>Take a look at
-<a href="http://github.com/mojombo/tpw/tree/master/index.html">index.html</a>. This file
-represents the homepage of the site. At the top of the file is a chunk of YAML
-that contains metadata about the file. This data tells Jekyll what layout to
-give the file, what the page’s title should be, etc. In this case, I specify
-that the “default” template should be used. You can find the layout files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts">_layouts</a> directory. If you
-open
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts/default.html">default.html</a>
-you can see that the homepage is constructed by wrapping index.html with this
-layout.</p>
-
-<p>You’ll also notice Liquid templating code in these files.
-<a href="http://www.liquidmarkup.org/">Liquid</a> is a simple, extensible templating
-language that makes it easy to embed data in your templates. For my homepage I
-wanted to have a list of all my blog posts. Jekyll hands me a Hash containing
-various data about my site. A reverse chronological list of all my blog posts
-can be found in <code>site.posts</code>. Each post, in turn, contains various
-fields such as <code>title</code> and <code>date</code>.</p>
-
-<p>Jekyll gets the list of blog posts by parsing the files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts">_posts</a> directory. Each post’s
-filename contains the publishing date and slug (what shows up in the URL) that
-the final HTML file should have. Open up the file corresponding to this blog
-post:
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile">2008-11-17-blogging-like-a-hacker.textile</a>.
-GitHub renders textile files by default, so to better understand the file, click
-on the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile?raw=true">raw</a>
-view to see the original file. Here I’ve specified the <code>post</code> layout.
-If you look at that file you’ll see an example of a nested layout. Layouts can
-contain other layouts allowing you a great deal of flexibility in how pages are
-assembled. In my case I use a nested layout in order to show related posts for
-each blog entry. The YAML also specifies the post’s title which is then embedded
-in the post’s body via Liquid.</p>
-
-<p>Posts are handled in a special way by Jekyll. The date you specify in the
-filename is used to construct the URL in the generated site. This post, for
-instance, ends up at
-<code>http://tom.preston-werner.com/2008/11/17/blogging-like-a-hacker.html</code>.</p>
-
-<p>Files that do not reside in directories prefixed with an underscore are mirrored
-into a corresponding directory structure in the generated site. If a file does
-not have a YAML preface, it is not run through the Liquid interpreter. Binary
-files are copied over unmodified.</p>
-
-<p>In order to convert your raw site into the finished version, you simply run:</p>
-
-<pre class="terminal"><code>$ jekyll /path/to/raw/site
-/path/to/place/generated/site</code></pre>
-
-<p>Jekyll is still a very young project. I’ve only developed the exact
-functionality that I’ve needed. As time goes on I’d like to see the project
-mature and support additional features. If you end up using Jekyll for your own
-blog, drop me a line and let me know what you’d like to see in future versions.
-Better yet, fork the project over at GitHub and hack in the features yourself!</p>
-
-<p>I’ve been living with Jekyll for just over a month now. I love it. Driving the
-development of Jekyll based on the needs of my blog has been very rewarding. I
-can edit my posts in TextMate, giving me automatic and competent spell checking.
-I have immediate and first class access to the CSS and page templates.
-Everything is backed up on GitHub. I feel a lightness now when I’m writing a
-post. The system is simple enough that I can keep the entire conversion process
-in my head. The distance from my brain to my blog has shrunk, and, in the end, I
-think that will make me a better author.</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[Blogging Like a Hacker,haha haha haha haha haha]]></summary></entry><entry><title type="html">Blogging Like a Hacker,haha haha haha haha haha</title><link href="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-5).html" rel="alternate" type="text/html" title="Blogging Like a Hacker,haha haha haha haha haha" /><published>2008-11-17T00:00:00+08:00</published><updated>2008-11-17T00:00:00+08:00</updated><id>http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha%20(Copy%205)</id><content type="html" xml:base="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-5).html"><![CDATA[<h1 id="blogging-like-a-hackerhaha-haha-haha-haha-haha">Blogging Like a Hacker,haha haha haha haha haha</h1>
-
-<p class="meta">17 Nov 2008 - San Francisco</p>
-
-<p>Back in 2000, when I thought I was going to be a professional writer, I spent
-hours a day on LiveJournal doing writing practice with other aspiring poets and
-authors. Since then I’ve blogged at three different domains about web standards,
-print design, photography, Flash, illustration, information architecture,
-ColdFusion, package management, PHP, CSS, advertising, Ruby, Rails, and Erlang.</p>
-
-<p>I love writing. I get a kick out of sharing my thoughts with others. The act of
-transforming ideas into words is an amazingly efficient way to solidify and
-refine your thoughts about a given topic. But as much as I enjoy blogging, I
-seem to be stuck in a cycle of quitting and starting over. Before starting the
-current iteration, I resolved to do some introspection to determine the factors
-that were leading to this destructive pattern.</p>
-
-<p>I already knew a lot about what I <em>didn’t</em> want. I was tired of complicated
-blogging engines like WordPress and Mephisto. I wanted to write great posts, not
-style a zillion template pages, moderate comments all day long, and constantly
-lag behind the latest software release. Something like Posterous looked
-attractive, but I wanted to style my blog, and it needed to be hosted at the
-domain of my choosing. For the same reason, other hosted sites (wordpress.com,
-blogger.com) were disqualified. There are a few people directly using GitHub as
-a blog (which is very cool), but that’s a bit too much of an impedance mismatch
-for my tastes.</p>
-
-<p>On Sunday, October 19th, I sat down in my San Francisco apartment with a glass
-of apple cider and a clear mind. After a period of reflection, I had an idea.
-While I’m not specifically trained as an author of prose, I <em>am</em> trained as an
-author of code. What would happen if I approached blogging from a software
-development perspective? What would that look like?</p>
-
-<p>First, all my writing would be stored in a Git repository. This would ensure
-that I could try out different ideas and explore a variety of posts all from the
-comfort of my preferred editor and the command line. I’d be able to publish a
-post via a simple deploy script or post-commit hook. Complexity would be kept to
-an absolute minimum, so a static site would be preferable to a dynamic site that
-required ongoing maintenance. My blog would need to be easily customizable;
-coming from a graphic design background means I’ll always be tweaking the site’s
-appearance and layout.</p>
-
-<p>Over the last month I’ve brought these concepts to fruition and I’m pleased to
-announce <a href="http://github.com/mojombo/jekyll">Jekyll</a>. Jekyll is a simple, blog
-aware, static site generator. It takes a template directory (representing the
-raw form of a website), runs it through Textile and Liquid converters, and spits
-out a complete, static website suitable for serving with Apache or your favorite
-web server. If you’re reading this on the website
-(http://tom.preston-werner.com), you’re seeing a Jekyll generated blog!</p>
-
-<p>To understand how this all works, open up my <a href="http://github.com/mojombo/tpw">TPW</a>
-repo in a new browser window. I’ll be referencing the code there.</p>
-
-<p>Take a look at
-<a href="http://github.com/mojombo/tpw/tree/master/index.html">index.html</a>. This file
-represents the homepage of the site. At the top of the file is a chunk of YAML
-that contains metadata about the file. This data tells Jekyll what layout to
-give the file, what the page’s title should be, etc. In this case, I specify
-that the “default” template should be used. You can find the layout files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts">_layouts</a> directory. If you
-open
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts/default.html">default.html</a>
-you can see that the homepage is constructed by wrapping index.html with this
-layout.</p>
-
-<p>You’ll also notice Liquid templating code in these files.
-<a href="http://www.liquidmarkup.org/">Liquid</a> is a simple, extensible templating
-language that makes it easy to embed data in your templates. For my homepage I
-wanted to have a list of all my blog posts. Jekyll hands me a Hash containing
-various data about my site. A reverse chronological list of all my blog posts
-can be found in <code>site.posts</code>. Each post, in turn, contains various
-fields such as <code>title</code> and <code>date</code>.</p>
-
-<p>Jekyll gets the list of blog posts by parsing the files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts">_posts</a> directory. Each post’s
-filename contains the publishing date and slug (what shows up in the URL) that
-the final HTML file should have. Open up the file corresponding to this blog
-post:
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile">2008-11-17-blogging-like-a-hacker.textile</a>.
-GitHub renders textile files by default, so to better understand the file, click
-on the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile?raw=true">raw</a>
-view to see the original file. Here I’ve specified the <code>post</code> layout.
-If you look at that file you’ll see an example of a nested layout. Layouts can
-contain other layouts allowing you a great deal of flexibility in how pages are
-assembled. In my case I use a nested layout in order to show related posts for
-each blog entry. The YAML also specifies the post’s title which is then embedded
-in the post’s body via Liquid.</p>
-
-<p>Posts are handled in a special way by Jekyll. The date you specify in the
-filename is used to construct the URL in the generated site. This post, for
-instance, ends up at
-<code>http://tom.preston-werner.com/2008/11/17/blogging-like-a-hacker.html</code>.</p>
-
-<p>Files that do not reside in directories prefixed with an underscore are mirrored
-into a corresponding directory structure in the generated site. If a file does
-not have a YAML preface, it is not run through the Liquid interpreter. Binary
-files are copied over unmodified.</p>
-
-<p>In order to convert your raw site into the finished version, you simply run:</p>
-
-<pre class="terminal"><code>$ jekyll /path/to/raw/site
-/path/to/place/generated/site</code></pre>
-
-<p>Jekyll is still a very young project. I’ve only developed the exact
-functionality that I’ve needed. As time goes on I’d like to see the project
-mature and support additional features. If you end up using Jekyll for your own
-blog, drop me a line and let me know what you’d like to see in future versions.
-Better yet, fork the project over at GitHub and hack in the features yourself!</p>
-
-<p>I’ve been living with Jekyll for just over a month now. I love it. Driving the
-development of Jekyll based on the needs of my blog has been very rewarding. I
-can edit my posts in TextMate, giving me automatic and competent spell checking.
-I have immediate and first class access to the CSS and page templates.
-Everything is backed up on GitHub. I feel a lightness now when I’m writing a
-post. The system is simple enough that I can keep the entire conversion process
-in my head. The distance from my brain to my blog has shrunk, and, in the end, I
-think that will make me a better author.</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[Blogging Like a Hacker,haha haha haha haha haha]]></summary></entry><entry><title type="html">Blogging Like a Hacker,haha haha haha haha haha</title><link href="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-6).html" rel="alternate" type="text/html" title="Blogging Like a Hacker,haha haha haha haha haha" /><published>2008-11-17T00:00:00+08:00</published><updated>2008-11-17T00:00:00+08:00</updated><id>http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha%20(Copy%206)</id><content type="html" xml:base="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-6).html"><![CDATA[<h1 id="blogging-like-a-hackerhaha-haha-haha-haha-haha">Blogging Like a Hacker,haha haha haha haha haha</h1>
-
-<p class="meta">17 Nov 2008 - San Francisco</p>
-
-<p>Back in 2000, when I thought I was going to be a professional writer, I spent
-hours a day on LiveJournal doing writing practice with other aspiring poets and
-authors. Since then I’ve blogged at three different domains about web standards,
-print design, photography, Flash, illustration, information architecture,
-ColdFusion, package management, PHP, CSS, advertising, Ruby, Rails, and Erlang.</p>
-
-<p>I love writing. I get a kick out of sharing my thoughts with others. The act of
-transforming ideas into words is an amazingly efficient way to solidify and
-refine your thoughts about a given topic. But as much as I enjoy blogging, I
-seem to be stuck in a cycle of quitting and starting over. Before starting the
-current iteration, I resolved to do some introspection to determine the factors
-that were leading to this destructive pattern.</p>
-
-<p>I already knew a lot about what I <em>didn’t</em> want. I was tired of complicated
-blogging engines like WordPress and Mephisto. I wanted to write great posts, not
-style a zillion template pages, moderate comments all day long, and constantly
-lag behind the latest software release. Something like Posterous looked
-attractive, but I wanted to style my blog, and it needed to be hosted at the
-domain of my choosing. For the same reason, other hosted sites (wordpress.com,
-blogger.com) were disqualified. There are a few people directly using GitHub as
-a blog (which is very cool), but that’s a bit too much of an impedance mismatch
-for my tastes.</p>
-
-<p>On Sunday, October 19th, I sat down in my San Francisco apartment with a glass
-of apple cider and a clear mind. After a period of reflection, I had an idea.
-While I’m not specifically trained as an author of prose, I <em>am</em> trained as an
-author of code. What would happen if I approached blogging from a software
-development perspective? What would that look like?</p>
-
-<p>First, all my writing would be stored in a Git repository. This would ensure
-that I could try out different ideas and explore a variety of posts all from the
-comfort of my preferred editor and the command line. I’d be able to publish a
-post via a simple deploy script or post-commit hook. Complexity would be kept to
-an absolute minimum, so a static site would be preferable to a dynamic site that
-required ongoing maintenance. My blog would need to be easily customizable;
-coming from a graphic design background means I’ll always be tweaking the site’s
-appearance and layout.</p>
-
-<p>Over the last month I’ve brought these concepts to fruition and I’m pleased to
-announce <a href="http://github.com/mojombo/jekyll">Jekyll</a>. Jekyll is a simple, blog
-aware, static site generator. It takes a template directory (representing the
-raw form of a website), runs it through Textile and Liquid converters, and spits
-out a complete, static website suitable for serving with Apache or your favorite
-web server. If you’re reading this on the website
-(http://tom.preston-werner.com), you’re seeing a Jekyll generated blog!</p>
-
-<p>To understand how this all works, open up my <a href="http://github.com/mojombo/tpw">TPW</a>
-repo in a new browser window. I’ll be referencing the code there.</p>
-
-<p>Take a look at
-<a href="http://github.com/mojombo/tpw/tree/master/index.html">index.html</a>. This file
-represents the homepage of the site. At the top of the file is a chunk of YAML
-that contains metadata about the file. This data tells Jekyll what layout to
-give the file, what the page’s title should be, etc. In this case, I specify
-that the “default” template should be used. You can find the layout files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts">_layouts</a> directory. If you
-open
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts/default.html">default.html</a>
-you can see that the homepage is constructed by wrapping index.html with this
-layout.</p>
-
-<p>You’ll also notice Liquid templating code in these files.
-<a href="http://www.liquidmarkup.org/">Liquid</a> is a simple, extensible templating
-language that makes it easy to embed data in your templates. For my homepage I
-wanted to have a list of all my blog posts. Jekyll hands me a Hash containing
-various data about my site. A reverse chronological list of all my blog posts
-can be found in <code>site.posts</code>. Each post, in turn, contains various
-fields such as <code>title</code> and <code>date</code>.</p>
-
-<p>Jekyll gets the list of blog posts by parsing the files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts">_posts</a> directory. Each post’s
-filename contains the publishing date and slug (what shows up in the URL) that
-the final HTML file should have. Open up the file corresponding to this blog
-post:
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile">2008-11-17-blogging-like-a-hacker.textile</a>.
-GitHub renders textile files by default, so to better understand the file, click
-on the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile?raw=true">raw</a>
-view to see the original file. Here I’ve specified the <code>post</code> layout.
-If you look at that file you’ll see an example of a nested layout. Layouts can
-contain other layouts allowing you a great deal of flexibility in how pages are
-assembled. In my case I use a nested layout in order to show related posts for
-each blog entry. The YAML also specifies the post’s title which is then embedded
-in the post’s body via Liquid.</p>
-
-<p>Posts are handled in a special way by Jekyll. The date you specify in the
-filename is used to construct the URL in the generated site. This post, for
-instance, ends up at
-<code>http://tom.preston-werner.com/2008/11/17/blogging-like-a-hacker.html</code>.</p>
-
-<p>Files that do not reside in directories prefixed with an underscore are mirrored
-into a corresponding directory structure in the generated site. If a file does
-not have a YAML preface, it is not run through the Liquid interpreter. Binary
-files are copied over unmodified.</p>
-
-<p>In order to convert your raw site into the finished version, you simply run:</p>
-
-<pre class="terminal"><code>$ jekyll /path/to/raw/site
-/path/to/place/generated/site</code></pre>
-
-<p>Jekyll is still a very young project. I’ve only developed the exact
-functionality that I’ve needed. As time goes on I’d like to see the project
-mature and support additional features. If you end up using Jekyll for your own
-blog, drop me a line and let me know what you’d like to see in future versions.
-Better yet, fork the project over at GitHub and hack in the features yourself!</p>
-
-<p>I’ve been living with Jekyll for just over a month now. I love it. Driving the
-development of Jekyll based on the needs of my blog has been very rewarding. I
-can edit my posts in TextMate, giving me automatic and competent spell checking.
-I have immediate and first class access to the CSS and page templates.
-Everything is backed up on GitHub. I feel a lightness now when I’m writing a
-post. The system is simple enough that I can keep the entire conversion process
-in my head. The distance from my brain to my blog has shrunk, and, in the end, I
-think that will make me a better author.</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[Blogging Like a Hacker,haha haha haha haha haha]]></summary></entry><entry><title type="html">Blogging Like a Hacker,haha haha haha haha haha</title><link href="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-7).html" rel="alternate" type="text/html" title="Blogging Like a Hacker,haha haha haha haha haha" /><published>2008-11-17T00:00:00+08:00</published><updated>2008-11-17T00:00:00+08:00</updated><id>http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha%20(Copy%207)</id><content type="html" xml:base="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-7).html"><![CDATA[<h1 id="blogging-like-a-hackerhaha-haha-haha-haha-haha">Blogging Like a Hacker,haha haha haha haha haha</h1>
-
-<p class="meta">17 Nov 2008 - San Francisco</p>
-
-<p>Back in 2000, when I thought I was going to be a professional writer, I spent
-hours a day on LiveJournal doing writing practice with other aspiring poets and
-authors. Since then I’ve blogged at three different domains about web standards,
-print design, photography, Flash, illustration, information architecture,
-ColdFusion, package management, PHP, CSS, advertising, Ruby, Rails, and Erlang.</p>
-
-<p>I love writing. I get a kick out of sharing my thoughts with others. The act of
-transforming ideas into words is an amazingly efficient way to solidify and
-refine your thoughts about a given topic. But as much as I enjoy blogging, I
-seem to be stuck in a cycle of quitting and starting over. Before starting the
-current iteration, I resolved to do some introspection to determine the factors
-that were leading to this destructive pattern.</p>
-
-<p>I already knew a lot about what I <em>didn’t</em> want. I was tired of complicated
-blogging engines like WordPress and Mephisto. I wanted to write great posts, not
-style a zillion template pages, moderate comments all day long, and constantly
-lag behind the latest software release. Something like Posterous looked
-attractive, but I wanted to style my blog, and it needed to be hosted at the
-domain of my choosing. For the same reason, other hosted sites (wordpress.com,
-blogger.com) were disqualified. There are a few people directly using GitHub as
-a blog (which is very cool), but that’s a bit too much of an impedance mismatch
-for my tastes.</p>
-
-<p>On Sunday, October 19th, I sat down in my San Francisco apartment with a glass
-of apple cider and a clear mind. After a period of reflection, I had an idea.
-While I’m not specifically trained as an author of prose, I <em>am</em> trained as an
-author of code. What would happen if I approached blogging from a software
-development perspective? What would that look like?</p>
-
-<p>First, all my writing would be stored in a Git repository. This would ensure
-that I could try out different ideas and explore a variety of posts all from the
-comfort of my preferred editor and the command line. I’d be able to publish a
-post via a simple deploy script or post-commit hook. Complexity would be kept to
-an absolute minimum, so a static site would be preferable to a dynamic site that
-required ongoing maintenance. My blog would need to be easily customizable;
-coming from a graphic design background means I’ll always be tweaking the site’s
-appearance and layout.</p>
-
-<p>Over the last month I’ve brought these concepts to fruition and I’m pleased to
-announce <a href="http://github.com/mojombo/jekyll">Jekyll</a>. Jekyll is a simple, blog
-aware, static site generator. It takes a template directory (representing the
-raw form of a website), runs it through Textile and Liquid converters, and spits
-out a complete, static website suitable for serving with Apache or your favorite
-web server. If you’re reading this on the website
-(http://tom.preston-werner.com), you’re seeing a Jekyll generated blog!</p>
-
-<p>To understand how this all works, open up my <a href="http://github.com/mojombo/tpw">TPW</a>
-repo in a new browser window. I’ll be referencing the code there.</p>
-
-<p>Take a look at
-<a href="http://github.com/mojombo/tpw/tree/master/index.html">index.html</a>. This file
-represents the homepage of the site. At the top of the file is a chunk of YAML
-that contains metadata about the file. This data tells Jekyll what layout to
-give the file, what the page’s title should be, etc. In this case, I specify
-that the “default” template should be used. You can find the layout files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts">_layouts</a> directory. If you
-open
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts/default.html">default.html</a>
-you can see that the homepage is constructed by wrapping index.html with this
-layout.</p>
-
-<p>You’ll also notice Liquid templating code in these files.
-<a href="http://www.liquidmarkup.org/">Liquid</a> is a simple, extensible templating
-language that makes it easy to embed data in your templates. For my homepage I
-wanted to have a list of all my blog posts. Jekyll hands me a Hash containing
-various data about my site. A reverse chronological list of all my blog posts
-can be found in <code>site.posts</code>. Each post, in turn, contains various
-fields such as <code>title</code> and <code>date</code>.</p>
-
-<p>Jekyll gets the list of blog posts by parsing the files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts">_posts</a> directory. Each post’s
-filename contains the publishing date and slug (what shows up in the URL) that
-the final HTML file should have. Open up the file corresponding to this blog
-post:
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile">2008-11-17-blogging-like-a-hacker.textile</a>.
-GitHub renders textile files by default, so to better understand the file, click
-on the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile?raw=true">raw</a>
-view to see the original file. Here I’ve specified the <code>post</code> layout.
-If you look at that file you’ll see an example of a nested layout. Layouts can
-contain other layouts allowing you a great deal of flexibility in how pages are
-assembled. In my case I use a nested layout in order to show related posts for
-each blog entry. The YAML also specifies the post’s title which is then embedded
-in the post’s body via Liquid.</p>
-
-<p>Posts are handled in a special way by Jekyll. The date you specify in the
-filename is used to construct the URL in the generated site. This post, for
-instance, ends up at
-<code>http://tom.preston-werner.com/2008/11/17/blogging-like-a-hacker.html</code>.</p>
-
-<p>Files that do not reside in directories prefixed with an underscore are mirrored
-into a corresponding directory structure in the generated site. If a file does
-not have a YAML preface, it is not run through the Liquid interpreter. Binary
-files are copied over unmodified.</p>
-
-<p>In order to convert your raw site into the finished version, you simply run:</p>
-
-<pre class="terminal"><code>$ jekyll /path/to/raw/site
-/path/to/place/generated/site</code></pre>
-
-<p>Jekyll is still a very young project. I’ve only developed the exact
-functionality that I’ve needed. As time goes on I’d like to see the project
-mature and support additional features. If you end up using Jekyll for your own
-blog, drop me a line and let me know what you’d like to see in future versions.
-Better yet, fork the project over at GitHub and hack in the features yourself!</p>
-
-<p>I’ve been living with Jekyll for just over a month now. I love it. Driving the
-development of Jekyll based on the needs of my blog has been very rewarding. I
-can edit my posts in TextMate, giving me automatic and competent spell checking.
-I have immediate and first class access to the CSS and page templates.
-Everything is backed up on GitHub. I feel a lightness now when I’m writing a
-post. The system is simple enough that I can keep the entire conversion process
-in my head. The distance from my brain to my blog has shrunk, and, in the end, I
-think that will make me a better author.</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[Blogging Like a Hacker,haha haha haha haha haha]]></summary></entry><entry><title type="html">Blogging Like a Hacker,haha haha haha haha haha</title><link href="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-8).html" rel="alternate" type="text/html" title="Blogging Like a Hacker,haha haha haha haha haha" /><published>2008-11-17T00:00:00+08:00</published><updated>2008-11-17T00:00:00+08:00</updated><id>http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha%20(Copy%208)</id><content type="html" xml:base="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy-8).html"><![CDATA[<h1 id="blogging-like-a-hackerhaha-haha-haha-haha-haha">Blogging Like a Hacker,haha haha haha haha haha</h1>
-
-<p class="meta">17 Nov 2008 - San Francisco</p>
-
-<p>Back in 2000, when I thought I was going to be a professional writer, I spent
-hours a day on LiveJournal doing writing practice with other aspiring poets and
-authors. Since then I’ve blogged at three different domains about web standards,
-print design, photography, Flash, illustration, information architecture,
-ColdFusion, package management, PHP, CSS, advertising, Ruby, Rails, and Erlang.</p>
-
-<p>I love writing. I get a kick out of sharing my thoughts with others. The act of
-transforming ideas into words is an amazingly efficient way to solidify and
-refine your thoughts about a given topic. But as much as I enjoy blogging, I
-seem to be stuck in a cycle of quitting and starting over. Before starting the
-current iteration, I resolved to do some introspection to determine the factors
-that were leading to this destructive pattern.</p>
-
-<p>I already knew a lot about what I <em>didn’t</em> want. I was tired of complicated
-blogging engines like WordPress and Mephisto. I wanted to write great posts, not
-style a zillion template pages, moderate comments all day long, and constantly
-lag behind the latest software release. Something like Posterous looked
-attractive, but I wanted to style my blog, and it needed to be hosted at the
-domain of my choosing. For the same reason, other hosted sites (wordpress.com,
-blogger.com) were disqualified. There are a few people directly using GitHub as
-a blog (which is very cool), but that’s a bit too much of an impedance mismatch
-for my tastes.</p>
-
-<p>On Sunday, October 19th, I sat down in my San Francisco apartment with a glass
-of apple cider and a clear mind. After a period of reflection, I had an idea.
-While I’m not specifically trained as an author of prose, I <em>am</em> trained as an
-author of code. What would happen if I approached blogging from a software
-development perspective? What would that look like?</p>
-
-<p>First, all my writing would be stored in a Git repository. This would ensure
-that I could try out different ideas and explore a variety of posts all from the
-comfort of my preferred editor and the command line. I’d be able to publish a
-post via a simple deploy script or post-commit hook. Complexity would be kept to
-an absolute minimum, so a static site would be preferable to a dynamic site that
-required ongoing maintenance. My blog would need to be easily customizable;
-coming from a graphic design background means I’ll always be tweaking the site’s
-appearance and layout.</p>
-
-<p>Over the last month I’ve brought these concepts to fruition and I’m pleased to
-announce <a href="http://github.com/mojombo/jekyll">Jekyll</a>. Jekyll is a simple, blog
-aware, static site generator. It takes a template directory (representing the
-raw form of a website), runs it through Textile and Liquid converters, and spits
-out a complete, static website suitable for serving with Apache or your favorite
-web server. If you’re reading this on the website
-(http://tom.preston-werner.com), you’re seeing a Jekyll generated blog!</p>
-
-<p>To understand how this all works, open up my <a href="http://github.com/mojombo/tpw">TPW</a>
-repo in a new browser window. I’ll be referencing the code there.</p>
-
-<p>Take a look at
-<a href="http://github.com/mojombo/tpw/tree/master/index.html">index.html</a>. This file
-represents the homepage of the site. At the top of the file is a chunk of YAML
-that contains metadata about the file. This data tells Jekyll what layout to
-give the file, what the page’s title should be, etc. In this case, I specify
-that the “default” template should be used. You can find the layout files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts">_layouts</a> directory. If you
-open
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts/default.html">default.html</a>
-you can see that the homepage is constructed by wrapping index.html with this
-layout.</p>
-
-<p>You’ll also notice Liquid templating code in these files.
-<a href="http://www.liquidmarkup.org/">Liquid</a> is a simple, extensible templating
-language that makes it easy to embed data in your templates. For my homepage I
-wanted to have a list of all my blog posts. Jekyll hands me a Hash containing
-various data about my site. A reverse chronological list of all my blog posts
-can be found in <code>site.posts</code>. Each post, in turn, contains various
-fields such as <code>title</code> and <code>date</code>.</p>
-
-<p>Jekyll gets the list of blog posts by parsing the files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts">_posts</a> directory. Each post’s
-filename contains the publishing date and slug (what shows up in the URL) that
-the final HTML file should have. Open up the file corresponding to this blog
-post:
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile">2008-11-17-blogging-like-a-hacker.textile</a>.
-GitHub renders textile files by default, so to better understand the file, click
-on the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile?raw=true">raw</a>
-view to see the original file. Here I’ve specified the <code>post</code> layout.
-If you look at that file you’ll see an example of a nested layout. Layouts can
-contain other layouts allowing you a great deal of flexibility in how pages are
-assembled. In my case I use a nested layout in order to show related posts for
-each blog entry. The YAML also specifies the post’s title which is then embedded
-in the post’s body via Liquid.</p>
-
-<p>Posts are handled in a special way by Jekyll. The date you specify in the
-filename is used to construct the URL in the generated site. This post, for
-instance, ends up at
-<code>http://tom.preston-werner.com/2008/11/17/blogging-like-a-hacker.html</code>.</p>
-
-<p>Files that do not reside in directories prefixed with an underscore are mirrored
-into a corresponding directory structure in the generated site. If a file does
-not have a YAML preface, it is not run through the Liquid interpreter. Binary
-files are copied over unmodified.</p>
-
-<p>In order to convert your raw site into the finished version, you simply run:</p>
-
-<pre class="terminal"><code>$ jekyll /path/to/raw/site
-/path/to/place/generated/site</code></pre>
-
-<p>Jekyll is still a very young project. I’ve only developed the exact
-functionality that I’ve needed. As time goes on I’d like to see the project
-mature and support additional features. If you end up using Jekyll for your own
-blog, drop me a line and let me know what you’d like to see in future versions.
-Better yet, fork the project over at GitHub and hack in the features yourself!</p>
-
-<p>I’ve been living with Jekyll for just over a month now. I love it. Driving the
-development of Jekyll based on the needs of my blog has been very rewarding. I
-can edit my posts in TextMate, giving me automatic and competent spell checking.
-I have immediate and first class access to the CSS and page templates.
-Everything is backed up on GitHub. I feel a lightness now when I’m writing a
-post. The system is simple enough that I can keep the entire conversion process
-in my head. The distance from my brain to my blog has shrunk, and, in the end, I
-think that will make me a better author.</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[Blogging Like a Hacker,haha haha haha haha haha]]></summary></entry><entry><title type="html">Blogging Like a Hacker,haha haha haha haha haha</title><link href="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy).html" rel="alternate" type="text/html" title="Blogging Like a Hacker,haha haha haha haha haha" /><published>2008-11-17T00:00:00+08:00</published><updated>2008-11-17T00:00:00+08:00</updated><id>http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha%20(Copy)</id><content type="html" xml:base="http://localhost:4000/2008/11/17/blogging-like-a-hacker-ha-ha-ha-ha-ha-(Copy).html"><![CDATA[<h1 id="blogging-like-a-hackerhaha-haha-haha-haha-haha">Blogging Like a Hacker,haha haha haha haha haha</h1>
-
-<p class="meta">17 Nov 2008 - San Francisco</p>
-
-<p>Back in 2000, when I thought I was going to be a professional writer, I spent
-hours a day on LiveJournal doing writing practice with other aspiring poets and
-authors. Since then I’ve blogged at three different domains about web standards,
-print design, photography, Flash, illustration, information architecture,
-ColdFusion, package management, PHP, CSS, advertising, Ruby, Rails, and Erlang.</p>
-
-<p>I love writing. I get a kick out of sharing my thoughts with others. The act of
-transforming ideas into words is an amazingly efficient way to solidify and
-refine your thoughts about a given topic. But as much as I enjoy blogging, I
-seem to be stuck in a cycle of quitting and starting over. Before starting the
-current iteration, I resolved to do some introspection to determine the factors
-that were leading to this destructive pattern.</p>
-
-<p>I already knew a lot about what I <em>didn’t</em> want. I was tired of complicated
-blogging engines like WordPress and Mephisto. I wanted to write great posts, not
-style a zillion template pages, moderate comments all day long, and constantly
-lag behind the latest software release. Something like Posterous looked
-attractive, but I wanted to style my blog, and it needed to be hosted at the
-domain of my choosing. For the same reason, other hosted sites (wordpress.com,
-blogger.com) were disqualified. There are a few people directly using GitHub as
-a blog (which is very cool), but that’s a bit too much of an impedance mismatch
-for my tastes.</p>
-
-<p>On Sunday, October 19th, I sat down in my San Francisco apartment with a glass
-of apple cider and a clear mind. After a period of reflection, I had an idea.
-While I’m not specifically trained as an author of prose, I <em>am</em> trained as an
-author of code. What would happen if I approached blogging from a software
-development perspective? What would that look like?</p>
-
-<p>First, all my writing would be stored in a Git repository. This would ensure
-that I could try out different ideas and explore a variety of posts all from the
-comfort of my preferred editor and the command line. I’d be able to publish a
-post via a simple deploy script or post-commit hook. Complexity would be kept to
-an absolute minimum, so a static site would be preferable to a dynamic site that
-required ongoing maintenance. My blog would need to be easily customizable;
-coming from a graphic design background means I’ll always be tweaking the site’s
-appearance and layout.</p>
-
-<p>Over the last month I’ve brought these concepts to fruition and I’m pleased to
-announce <a href="http://github.com/mojombo/jekyll">Jekyll</a>. Jekyll is a simple, blog
-aware, static site generator. It takes a template directory (representing the
-raw form of a website), runs it through Textile and Liquid converters, and spits
-out a complete, static website suitable for serving with Apache or your favorite
-web server. If you’re reading this on the website
-(http://tom.preston-werner.com), you’re seeing a Jekyll generated blog!</p>
-
-<p>To understand how this all works, open up my <a href="http://github.com/mojombo/tpw">TPW</a>
-repo in a new browser window. I’ll be referencing the code there.</p>
-
-<p>Take a look at
-<a href="http://github.com/mojombo/tpw/tree/master/index.html">index.html</a>. This file
-represents the homepage of the site. At the top of the file is a chunk of YAML
-that contains metadata about the file. This data tells Jekyll what layout to
-give the file, what the page’s title should be, etc. In this case, I specify
-that the “default” template should be used. You can find the layout files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts">_layouts</a> directory. If you
-open
-<a href="http://github.com/mojombo/tpw/tree/master/_layouts/default.html">default.html</a>
-you can see that the homepage is constructed by wrapping index.html with this
-layout.</p>
-
-<p>You’ll also notice Liquid templating code in these files.
-<a href="http://www.liquidmarkup.org/">Liquid</a> is a simple, extensible templating
-language that makes it easy to embed data in your templates. For my homepage I
-wanted to have a list of all my blog posts. Jekyll hands me a Hash containing
-various data about my site. A reverse chronological list of all my blog posts
-can be found in <code>site.posts</code>. Each post, in turn, contains various
-fields such as <code>title</code> and <code>date</code>.</p>
-
-<p>Jekyll gets the list of blog posts by parsing the files in the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts">_posts</a> directory. Each post’s
-filename contains the publishing date and slug (what shows up in the URL) that
-the final HTML file should have. Open up the file corresponding to this blog
-post:
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile">2008-11-17-blogging-like-a-hacker.textile</a>.
-GitHub renders textile files by default, so to better understand the file, click
-on the
-<a href="http://github.com/mojombo/tpw/tree/master/_posts/2008-11-17-blogging-like-a-hacker.textile?raw=true">raw</a>
-view to see the original file. Here I’ve specified the <code>post</code> layout.
-If you look at that file you’ll see an example of a nested layout. Layouts can
-contain other layouts allowing you a great deal of flexibility in how pages are
-assembled. In my case I use a nested layout in order to show related posts for
-each blog entry. The YAML also specifies the post’s title which is then embedded
-in the post’s body via Liquid.</p>
-
-<p>Posts are handled in a special way by Jekyll. The date you specify in the
-filename is used to construct the URL in the generated site. This post, for
-instance, ends up at
-<code>http://tom.preston-werner.com/2008/11/17/blogging-like-a-hacker.html</code>.</p>
-
-<p>Files that do not reside in directories prefixed with an underscore are mirrored
-into a corresponding directory structure in the generated site. If a file does
-not have a YAML preface, it is not run through the Liquid interpreter. Binary
-files are copied over unmodified.</p>
-
-<p>In order to convert your raw site into the finished version, you simply run:</p>
-
-<pre class="terminal"><code>$ jekyll /path/to/raw/site
-/path/to/place/generated/site</code></pre>
-
-<p>Jekyll is still a very young project. I’ve only developed the exact
-functionality that I’ve needed. As time goes on I’d like to see the project
-mature and support additional features. If you end up using Jekyll for your own
-blog, drop me a line and let me know what you’d like to see in future versions.
-Better yet, fork the project over at GitHub and hack in the features yourself!</p>
-
-<p>I’ve been living with Jekyll for just over a month now. I love it. Driving the
-development of Jekyll based on the needs of my blog has been very rewarding. I
-can edit my posts in TextMate, giving me automatic and competent spell checking.
-I have immediate and first class access to the CSS and page templates.
-Everything is backed up on GitHub. I feel a lightness now when I’m writing a
-post. The system is simple enough that I can keep the entire conversion process
-in my head. The distance from my brain to my blog has shrunk, and, in the end, I
-think that will make me a better author.</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[Blogging Like a Hacker,haha haha haha haha haha]]></summary></entry></feed>
+<p>对于其他二维变形，可以把此题作为基础，将其他二维变形往这道题上去套，可能可以找到思路。</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[单调栈 (Monotonic Stack) 10 Aug 2025]]></summary></entry><entry><title type="html">数独优化求解(Solving Sudoku, From Backtracking to CSP Optimizations)</title><link href="http://localhost:4000/2025/08/06/%E6%95%B0%E7%8B%AC%E4%BC%98%E5%8C%96%E6%B1%82%E8%A7%A3Solving-Sudoku-From-Backtracking-to-CSP-Optimizations.html" rel="alternate" type="text/html" title="数独优化求解(Solving Sudoku, From Backtracking to CSP Optimizations)" /><published>2025-08-06T00:00:00+08:00</published><updated>2025-08-06T00:00:00+08:00</updated><id>http://localhost:4000/2025/08/06/%E6%95%B0%E7%8B%AC%E4%BC%98%E5%8C%96%E6%B1%82%E8%A7%A3Solving%20Sudoku%20From%20Backtracking%20to%20CSP%20Optimizations</id><content type="html" xml:base="http://localhost:4000/2025/08/06/%E6%95%B0%E7%8B%AC%E4%BC%98%E5%8C%96%E6%B1%82%E8%A7%A3Solving-Sudoku-From-Backtracking-to-CSP-Optimizations.html"><![CDATA[<h1 id="数独优化求解solving-sudoku-from-backtracking-to-csp-optimizations">数独优化求解(Solving Sudoku, From Backtracking to CSP Optimizations)</h1>
+<p class="meta">10 Aug 2025</p>
+
+<h5 id="1introduction"><strong>1.Introduction</strong></h5>
+
+<p>The inspiration for this project arose from a lesson on solving logic puzzles, such as Einstein’s Riddle, using Prolog. The underlying solution approach for Einstein’s Riddle fundamentally relies on search and backtracking algorithms. This experience led to the realization that similar methodologies could be effectively applied to other logic puzzles, including Sudoku. Furthermore, it highlighted the potential for algorithmic improvements, particularly in reducing time complexity. This project explores this potential by implementing and comparing two solution strategies for Sudoku: a basic backtracking algorithm and an optimized approach incorporating CSP (Constraint Satisfaction Problem) techniques.</p>
+
+<h5 id="2background"><strong>2.Background</strong></h5>
+
+<p><strong>Sudoku</strong></p>
+
+<p>As a globally popular logic puzzle, Sudoku is governed by seemingly simple rules: the objective is to fill a 9×9 grid so that each digit from 1 to 9 appears exactly once in every row, column, and 3×3 subgrid. Despite their simplicity, these combinatorial uniqueness constraints define a challenging problem space, classifying Sudoku as a Constraint Satisfaction Problem (CSP), in which valid solutions must simultaneously satisfy all given constraints.</p>
+
+<p><strong>CSP Optimization</strong></p>
+
+<p>CSP optimization refers to a set of techniques designed to enhance the efficiency of solving Constraint Satisfaction Problems. A CSP is defined by three fundamental components: variables, domains, and constraints. By leveraging strategies such as the Minimum Remaining Values (MRV) heuristic and constraint propagation, CSP techniques effectively reduce the search space and eliminate redundant computations, leading to faster and more efficient solutions.</p>
+
+<p>CSP optimization techniques improve solving efficiency by significantly reducing computational complexity. A Constraint Satisfaction Problem (CSP) is defined by three key components: variables (e.g., empty cells in a Sudoku grid), domains (e.g., the set of possible digits {1–9} for each cell), and constraints (e.g., the requirement that each digit appears exactly once in every row, column, and 3×3 subgrid).</p>
+
+<p>A common CSP optimization is achieved through two core strategies. First, the Minimum Remaining Values (MRV) heuristic guides the search by selecting the variable with the fewest valid values remaining, thereby increasing the likelihood of early detection of conflicts and pruning futile branches sooner. Second, constraint propagation dynamically removes inconsistent values from the domains of related variables after each assignment, effectively narrowing the search space and preventing invalid configurations. Together, these techniques greatly enhance the performance of CSP solvers.</p>
+
+<h5 id="3methodology"><strong>3.Methodology</strong></h5>
+
+<p><strong>Backtracking</strong></p>
+
+<p>Backtracking is a fundamental depth-first search (DFS) algorithm widely used in decision-based problem solving. It systematically explores potential solutions by incrementally building candidates and backtracking (reversing previous choices whenever a partial assignment violates the problem’s constraints). The core procedure follows these steps:</p>
+
+<ol>
+  <li>Stepwise Assignment: Construct a solution by assigning values to variables one at a time, in a predetermined order.</li>
+  <li>Consistency Validation: After each assignment, check whether the current state satisfies all constraints.</li>
+  <li>Backtracking Trigger: If no valid value can be assigned to the current variable, undo the most recent assignment and explore alternative values for that variable.</li>
+  <li>Termination: Repeat this process until either a complete and valid solution is found or all possible assignments have been exhausted.</li>
+</ol>
+
+<p>Due to its systematic exploration and pruning of invalid paths, backtracking is particularly well-suited for problems involving combinations, permutations, and constraint satisfaction, including Sudoku.</p>
+
+<p>In the context of Sudoku, the algorithm begins at the top-left cell of the 9×9 grid and proceeds row by row, from left to right and top to bottom. For each empty cell, it attempts digits from 1 to 9 in sequence, checking whether each candidate value adheres to the Sudoku constraints (i.e., no duplicates in the corresponding row, column, and 3×3 subgrid). If no valid digit can be placed in a cell, the algorithm concludes that an earlier assignment must be incorrect and backtracks to revise previous choices. This iterative process continues until a complete and consistent solution is achieved.</p>
+
+<p><strong>Disadvantages of Backtracking</strong></p>
+
+<p>Although backtracking solves Sudoku puzzles in a straightforward and intuitive manner, it suffers from a critical drawback: an extremely high time complexity of O(9ⁿ), where n is the number of empty cells. This inefficiency arises because the algorithm does not fully leverage the inherent structure of Sudoku’s constraints. Specifically, backtracking only applies the rules—such as the requirement for unique digits in each row, column, and 3×3 subgrid—to validate a guess after it has been made, rather than using them proactively to guide and prune the search space.</p>
+
+<p>For example, if the digit 4 already appears in row 1, it is impossible for 4 to appear again in any other empty cell of that row. However, standard backtracking does not eliminate 4 from the candidate list for those cells in advance, potentially leading to redundant and invalid guesses. By failing to incorporate constraint information earlier in the process, the algorithm wastes time exploring paths that could have been ruled out immediately. This highlights a key opportunity for optimization through more intelligent use of the puzzle’s constraints during the search.</p>
+
+<p><strong>Introducing MRV and Constraints Propagation</strong></p>
+
+<p>To enhance the efficiency of backtracking, we incorporate Constraint Satisfaction Problem (CSP) optimization techniques. First, we apply the Minimum Remaining Values (MRV) heuristic, which selects the next empty cell to assign based on the fewest number of valid candidate values. This strategy helps to quickly expose dead ends and prune unproductive branches of the search tree early. Second, we implement constraint propagation, which actively enforces Sudoku’s core constraints, namely, the requirement that each digit from 1 to 9 must appear exactly once in every row, column, and 3×3 subgrid. As values are assigned, this technique dynamically eliminates invalid candidates from the domains of related unassigned cells, thereby reducing the search space and minimizing the number of futile guesses. Together, these optimizations significantly improve the solver’s performance by making the search process more informed and efficient.</p>
+
+<h5 id="4implementation"><strong>4.Implementation</strong></h5>
+
+<p><strong>Backtracking Algorithm Implementation</strong></p>
+
+<div style="text-align: center;">
+  <img src="/images/monoqueue/flow.png" alt="图片1" style="display: block; margin: 0 auto;zoom:100%;" />
+</div>
+
+<p>The backtracking implementation consists of a main for loop that systematically fills empty cells while maintaining Sudoku constraints. When a cell cannot be filled with any valid number, the algorithm backtracks to the previous modifiable cell and tries the next available number.</p>
+
+<p>The following code shows how the backtracking algorithm is implemented.</p>
+
+<div style="text-align: center;">
+  <img src="/images/monoqueue/algo1.png" alt="图片2" style="display: block; margin: 0 auto; zoom:100%;" />
+</div>
+
+<p>The following code shows how the function, solve(), is called in the main function.</p>
+
+<div style="text-align: center;">
+  <img src="/images/monoqueue/main.png" alt="图片3" style="display: block; margin: 0 auto; zoom:50%;" />
+</div>
+
+<p><strong>MRV and Constraint Propagation Implementation</strong></p>
+
+<div style="text-align: center;">
+  <img src="/images/monoqueue/flow2.png" alt="图片4" style="display: block; margin: 0 auto; zoom:100%;" />
+</div>
+
+<p>Building upon the backtracking logic and code, the version incorporating Constraint Propagation and MRV has added two functions to optimize the algorithm. It first calls the propagate_constraints () function to eliminate scenarios with obvious contradictions. Then, it invokes the find_mrv_cell () function to ensure the next step is the one most likely to either advance the solution or detect conflicts. When searching for values for an empty cell, only numbers recorded in the candidate array (i.e., valid possibilities) are tried, rather than sequentially testing numbers from 1 to 9. If a cell cannot be filled with any valid number, the algorithm backtracks to the previous modifiable cell and attempts the next available number.</p>
+
+<p>The following code shows how the Propagate Constraints and MRV Version is implemented.</p>
+
+<div style="text-align: center;">
+  <img src="/images/monoqueue/algo2.png" alt="图片5" style="display: block; margin: 0 auto; max-width: 550px; max-height: 350px;" />
+</div>
+<h5 id="5experimental-evaluation"><strong>5.Experimental evaluation</strong></h5>
+
+<div class="three-line-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Easy</th>
+        <th>Medium</th>
+        <th>Hard</th>
+        <th>Harder</th>
+        <th>Very hard</th>
+        <th>Super hard</th>
+        <th>Impossible</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Backtracking</td>
+        <td>268.00</td>
+        <td>399.57</td>
+        <td>10901.7</td>
+        <td>935.86</td>
+        <td>1067.29</td>
+        <td>1681.29</td>
+        <td>7703.14</td>
+      </tr>
+      <tr>
+        <td>MRV &amp; Propagate Constraints</td>
+        <td>171.50</td>
+        <td>206.43</td>
+        <td>731.43</td>
+        <td>163.71</td>
+        <td>287.14</td>
+        <td>123.57</td>
+        <td>5153.14</td>
+      </tr>
+      <tr>
+        <td>Speed up</td>
+        <td>1.56</td>
+        <td>1.94</td>
+        <td>14.90</td>
+        <td>5.72</td>
+        <td>3.72</td>
+        <td>13.61</td>
+        <td>1.49</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="text-align: center;">
+  <img src="/images/monoqueue/zhu.png" alt="图片5" style="display: block; margin: 0 auto; max-width: 500px; max-height: 300px;" />
+</div>
+
+<p>As shown in Figure 1, the new version has improved the algorithm’s performance by approximately 1.5 to 15 times through optimizations based on the Minimum Remaining Value (MRV) and constraint propagation.</p>
+
+<p>As shown in Figure 2, regarding backtracking, except for the “Hard” difficulty level, its processing time for Sudoku puzzles shows an upward trend with the increase in difficulty. As for the optimized version, except for the “Impossible” difficulty level, its processing time tends to be stable.</p>
+
+<p>However, as shown in Figure 2, the data of the “Hard” difficulty level does not conform to the pattern in the graph. Initially, I controlled the difficulty of Sudoku by limiting the number of known numbers. But in subsequent experiments, the obtained experimental data did not conform to basic logic, and it was then discovered that the number of known numbers cannot accurately represent the difficulty of Sudoku. Therefore, I speculate that the difficulty of Sudoku may also be determined by factors such as the arrangement of numbers. In addition, a specific algorithm may be good at or not good at handling a certain type of number arrangement. Thus, the abnormal data in the “Hard” difficulty level may be caused by the above-mentioned reasons.</p>
+
+<h5 id="6conclusion"><strong>6.Conclusion</strong></h5>
+
+<p>This study demonstrates that integrating CSP optimization techniques (MRV and constraint propagation) can significantly enhance the efficiency of Sudoku-solving algorithms, achieving a speedup of 1.5 to 15 times. The backtracking algorithm exhibits inconsistent performance across different difficulty levels, whereas the optimized version maintains relatively stable processing efficiency. It is also confirmed that Sudoku difficulty is not solely determined by the number of known digits but is also affected by factors such as number arrangement, which warrants further exploration.</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[数独优化求解(Solving Sudoku, From Backtracking to CSP Optimizations) 10 Aug 2025]]></summary></entry></feed>
