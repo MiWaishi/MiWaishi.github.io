@@ -5,7 +5,7 @@ title: 数独优化求解(Solving Sudoku, From Backtracking to CSP Optimizations
 
 {{ page.title }}
 ================
-<p class="meta">10 Aug 2025</p>
+<p class="meta">6 Aug 2025</p>
 
 ##### **1.Introduction**
 
