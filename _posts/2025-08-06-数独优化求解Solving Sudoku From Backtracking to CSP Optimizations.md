@@ -55,7 +55,7 @@ To enhance the efficiency of backtracking, we incorporate Constraint Satisfactio
 **Backtracking Algorithm Implementation**
 
 <div style="text-align: center;">
-  <img src="/images/monoqueue/flow.png" alt="图片1" style="display: block; margin: 0 auto;zoom:100%;">
+  <img src="/images/monoqueue/flow.png" alt="图片1" style="display: block; margin: 0 auto;zoom:110%;">
 </div>
 
 The backtracking implementation consists of a main for loop that systematically fills empty cells while maintaining Sudoku constraints. When a cell cannot be filled with any valid number, the algorithm backtracks to the previous modifiable cell and tries the next available number.
@@ -64,13 +64,13 @@ The backtracking implementation consists of a main for loop that systematically 
  The following code shows how the backtracking algorithm is implemented. 
  
 <div style="text-align: center;">
-  <img src="/images/monoqueue/algo1.png" alt="图片2" style="display: block; margin: 0 auto; zoom:100%;">
+  <img src="/images/monoqueue/algo1.png" alt="图片2" style="display: block; margin: 0 auto; zoom:110%;">
 </div>
 
 The following code shows how the function, solve(), is called in the main function. 
 
 <div style="text-align: center;">
-  <img src="/images/monoqueue/main.png" alt="图片3" style="display: block; margin: 0 auto; zoom:50%;">
+  <img src="/images/monoqueue/main.png" alt="图片3" style="display: block; margin: 0 auto; zoom:60%;">
 </div>
 
 
@@ -137,8 +137,6 @@ The following code shows how the Propagate Constraints and MRV Version is implem
     </tbody>
   </table>
 </div>
-
-
 
 <div style="text-align: center;">
   <img src="/images/monoqueue/zhu.png" alt="图片5" style="display: block; margin: 0 auto; max-width: 500px; max-height: 300px;">
