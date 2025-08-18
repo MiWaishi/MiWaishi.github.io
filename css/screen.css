@@ -45,29 +45,41 @@ a:hover {
 a:visited {
   color: #a0a;
 }
-
+/*****************************************************************************/
 .three-line-table table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1em 0;
+  margin: 0.4em 0; /* 比最小方案稍大一点的外部间距 */
+  border-spacing: 0;
 }
 
 .three-line-table th, .three-line-table td {
-  padding: 8px;
+  padding: 3px 7px; /* 内边距比最小方案增加1px，保持舒适 */
   text-align: left;
+  line-height: 1.2; /* 行高适度放宽 */
+  border: none;
 }
 
-/* 表头上方的线 */
 .three-line-table thead {
-  border-top: 1px solid #000; /* 调整为 1px */
-  border-bottom: 1px solid #000; /* 调整为 1px */
+  border-top: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
 }
 
-/* 表身下方的线 */
 .three-line-table tbody {
-  border-bottom: 1px solid #000; /* 调整为 1px */
+  border-bottom: 1.5px solid #000;
 }
 
+/* 表头可略高于内容区，增强区分度 */
+.three-line-table thead th {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.three-line-table table {
+  font-size: 12px; /* 保持正常字体大小 */
+}
+
+/****************************************************************************/
 table {
   font-size: inherit;
   font: 80%;

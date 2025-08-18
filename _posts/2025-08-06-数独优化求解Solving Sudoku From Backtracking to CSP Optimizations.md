@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 数独优化求解(Solving Sudoku, From Backtracking to CSP Optimizations) 
+title: 数独优化求解(Solving Sudoku, from Backtracking to CSP Optimizations) 
 ---
 
 {{ page.title }}
