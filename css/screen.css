@@ -195,7 +195,7 @@ ul.posts {
     border: 1px solid #ddd;
     background-color: #eef;
     padding: 0 .4em;
-    
+    line-height: 1.2; /* 调整行间距 */    
   }
 
   #post ul,
@@ -208,6 +208,9 @@ ul.posts {
     background-color: #eef;
     font-size: 95%;
     padding: 0 .2em;
+    margin-top: 10px; /* 上间距 */
+    margin-bottom: 10px; /* 下间距 */
+    line-height: 1.2; /* 调整行间距 */
      }
 
     #post pre code {

@@ -1,4 +1,252 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-09-04T22:19:29+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">sun Blog Title</title><subtitle>A brief description of your blog.</subtitle><author><name>Your Name</name><email>your-email@example.com</email></author><entry><title type="html">单调队列(Monotonic Queue)</title><link href="http://localhost:4000/2025/08/17/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97Monotonic-Queue.html" rel="alternate" type="text/html" title="单调队列(Monotonic Queue)" /><published>2025-08-17T00:00:00+08:00</published><updated>2025-08-17T00:00:00+08:00</updated><id>http://localhost:4000/2025/08/17/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97Monotonic%20Queue</id><content type="html" xml:base="http://localhost:4000/2025/08/17/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97Monotonic-Queue.html"><![CDATA[<h1 id="单调队列monotonic-queue">单调队列(Monotonic Queue)</h1>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-09-13T22:16:20+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">sun Blog Title</title><subtitle>A brief description of your blog.</subtitle><author><name>Your Name</name><email>your-email@example.com</email></author><entry><title type="html">树状数组(Binary Indexed Tree)</title><link href="http://localhost:4000/2025/09/12/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree.html" rel="alternate" type="text/html" title="树状数组(Binary Indexed Tree)" /><published>2025-09-12T00:00:00+08:00</published><updated>2025-09-12T00:00:00+08:00</updated><id>http://localhost:4000/2025/09/12/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary%20Indexed%20Tree</id><content type="html" xml:base="http://localhost:4000/2025/09/12/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree.html"><![CDATA[<h1 id="树状数组binary-indexed-tree">树状数组(Binary Indexed Tree)</h1>
+<p class="meta">12 Sep 2025</p>
+
+<p><strong>1.简介</strong></p>
+
+<ul>
+  <li>普通的树状数组可以处理单点修改和区间查询。</li>
+  <li>树状数组维护的信息必须满足<strong>结合律</strong>和<strong>可差分</strong>（如加法，乘法，异或）。</li>
+  <li>利用差分，可以实现区间修改。</li>
+</ul>
+
+<p><strong>2.原理</strong></p>
+
+<p>将一段长度为n的区间拆成不多于<strong>logn段区间</strong>。</p>
+
+<p><img src="/Users/stanchen/Desktop/fenwick.svg" alt="fenwick" style="zoom:80%;" /></p>
+
+<p>这样处理各种问题效率要更高。如计算a[1…7]的和，过程：从c[7]开始往前跳，发现c[7]只管辖a[7]这个元素；然后找到c[6]，发现c[6]管辖a[5…6]；然后找到c[4]，发现c[4]管辖a[1…4]，然后再试图跳到c[0]，但实际上不存在，所以不跳了。因此答案为c[7]+c[6]+c[4]。</p>
+
+<p>如果查询的是a[4…7]，那么答案是：查询a[1…7] - 查询a[1…3]。</p>
+
+<p><strong>2.1 管辖区间</strong></p>
+
+<p>问题是，c[x]管辖的区间长度到底是多少（向左边延伸多长）？</p>
+
+<p>规定c[x]管辖的区间长度为 2的k次方，其中：</p>
+
+<ul>
+  <li>k表示x的二进制中，最低位的1所在的数位。</li>
+  <li>2的k次方(十进制) 表示，在x的二进制中，最低位的1以及后面所有的0组成的数。</li>
+</ul>
+
+<p>比如，c[88]管辖的区间长度：</p>
+
+<p>88(10) = 01011000(2)，其中最低位的1和后面的0组成的数字为1000(2)，即8(10)，所以长度为8，c[88]管辖a[81…88]。</p>
+
+<p>可以用 <strong>lowbit(x)</strong> 求x二进制数中最低位1和后面的0组成的数。因为lowbit(x)所求得的数在十进制中是 2的k次方，也就是区间的长度，那么c[x]管辖的区间就是a[x-lowbit(x)+1]。</p>
+
+<p><strong>2.2 lowbit原理</strong></p>
+
+<p><strong>原码</strong>：最简单的机器数表示法，最高位为符号位，1表示负数，0表示正数，其余位存放该数 2进制的绝对值。</p>
+
+<p><strong>反码</strong>：正数的反码是其原码；数的反码是其原码除符号位外，按位取反。</p>
+
+<p>1110(-1) + 1101(-2) = 1011(-4)，而正确答案应该是-3;</p>
+
+<p>1110(-1) + 1100(-3) = 1010(-5)，而正确答案应该是-4。</p>
+
+<p>计算结果和正确答案差了1，所以引申出补码的概念来解决问题。</p>
+
+<p><strong>补码</strong>：正数的补码是其原码，负数的补码是其原码+1。</p>
+
+<p>lowbit(x) = x &amp; -x，-x在运算过程中，其形式是补码（存储过程中也是）。</p>
+
+<p>通过这样的运算，可以得到最低位的1后后面的0组成的数。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">lowbit</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  	<span class="k">return</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">x</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>3.实现</strong></p>
+
+<p><strong>3.1区间查询</strong></p>
+
+<p>对于一个区间[L, R]的询问，都可以拆解成[1, L-1]的询问，以及[1, R]的询问，再用后者减去前者。</p>
+
+<p>具体的查询过程：查询a[1…x]的和</p>
+
+<ol>
+  <li>从c[x]往前跳，找到c[x]管辖a[x-lowbit(x)+1…..x];</li>
+  <li>x -= lowbit(x)，如果 x = 0说明已经跳到尽头;</li>
+  <li>将跳到的c求和。</li>
+</ol>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">query</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  	<span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  	<span class="k">while</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">sum</span> <span class="o">+=</span> <span class="n">c</span><span class="p">[</span><span class="n">x</span><span class="p">];</span>
+    		<span class="n">x</span> <span class="o">-=</span> <span class="n">lowbit</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+  	<span class="p">}</span>
+  	<span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>3.2单点修改</strong></p>
+
+<p>对于长度为n的数列，若修改第x个元素，那么不仅会影响这个元素本身，还会影响包含这个数字的所有c。</p>
+
+<p>那么从第x个元素开始，找到所有包含此元素的c，都进行修改。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 将第x个元素加上k</span>
+  	<span class="k">while</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+  	  	<span class="n">c</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="n">k</span><span class="p">;</span>
+		<span class="n">x</span> <span class="o">+=</span> <span class="n">lowbit</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>4. 复杂度</strong></p>
+
+<p>空间复杂度为O(n)。</p>
+
+<p>时间复杂度:</p>
+<ul>
+  <li>对于查询操作，最坏情况是将这个数组c遍历一遍，所需时间O(log n)。因为将长度为n的数列为成了log n个区间。</li>
+  <li>对于修改操作，点x的高度为log2 (lowbit(x))，不会超过log 2 n, 同样是log级别：O(log n)。</li>
+</ul>
+
+<p><strong>5.例题</strong></p>
+
+<p><strong>Example 1</strong><a href="https://www.luogu.com.cn/problem/P3374">洛谷 P3374 模版1</a></p>
+
+<p>单点修改，区间求和，模版代码如下</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span><span class="cp">
+</span><span class="n">using</span> <span class="n">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="cp">#define int long long
+</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">a</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">t</span><span class="p">[</span><span class="mi">500010</span><span class="p">];</span>
+<span class="kt">int</span> <span class="nf">lowbit</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">while</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+	  	<span class="n">t</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="n">k</span><span class="p">;</span>
+		<span class="n">x</span> <span class="o">+=</span> <span class="n">lowbit</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+<span class="kt">int</span> <span class="nf">query</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="k">while</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+	  	<span class="n">sum</span> <span class="o">+=</span> <span class="n">t</span><span class="p">[</span><span class="n">x</span><span class="p">];</span>
+		<span class="n">x</span> <span class="o">-=</span> <span class="n">lowbit</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">signed</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="n">m</span><span class="p">;</span>
+	<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+	  	<span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">a</span><span class="p">;</span>
+		<span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="kt">int</span> <span class="n">op</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
+	<span class="k">while</span><span class="p">(</span><span class="n">m</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+	  	<span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">op</span><span class="p">;</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">op</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+		  	<span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="n">y</span><span class="p">;</span>
+			<span class="n">update</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="n">y</span><span class="p">;</span>
+			<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">query</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="n">query</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+	 	<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Example 2</strong> <a href="https://www.luogu.com.cn/problem/P3368">洛谷 P3368 模版2</a></p>
+
+<p>区间修改，单点查询。要用到差分的思想。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a[] 1  5  4  2  3
+d[] 1  4 -1 -2 -1
+</code></pre></div></div>
+
+<p>在[2, 4]的区间上都加上2：若运用普通的差分，则d[2] += 2, d[5] -= -2。</p>
+
+<p>那么如何与树状数组结合？将原数组转化为差分数组后，在差分数组上操作，此题就与模版1无异了。在差分数组上单点修改，再求1….x的区间和，就可以找到第x个元素的值。</p>
+
+<p>三个函数与模版1一样，主函数中的不同之处，就是把原数组转化为差分数组。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">input</span><span class="p">();</span>
+  	
+        <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="c1">// 差分</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+  	
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="c1">// 差分数组上建树</span>
+                <span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  	
+        <span class="kt">int</span> <span class="n">op</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k</span><span class="p">;</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">m</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">op</span><span class="p">;</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">op</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="n">y</span> <span class="o">&gt;&gt;</span> <span class="n">k</span><span class="p">;</span>
+                        <span class="n">update</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">);</span>
+                        <span class="n">update</span><span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">k</span><span class="p">);</span> <span class="c1">// 利用差分来修改</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">x</span><span class="p">;</span>
+                        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">query</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Example 3</strong> <a href="https://www.luogu.com.cn/problem/P1908">洛谷 P1908 逆序对</a></p>
+
+<p>描述：一个长为n的数列，找到每个数左侧比它大的数。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>input								output
+6									11
+5 4 2 6 3 1
+</code></pre></div></div>
+
+<p>思路：维护一个桶数组，记录每个数字出现的次数。将数列中的数依次读入，求得当前数的答案之后，再放入到桶数组中。</p>
+
+<p>例如，一个桶数组如下（原数组即为样例）：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i   1 2 3 4 5 6
+t[] 0 1 1 1 1 1
+</code></pre></div></div>
+
+<p>此时刚刚将3放入数组中。除了1之外，每个数字都出现过了1次。现在求3的答案。目前出现过的数字中，有5,4,6三个数字比3大，则3所贡献的答案为3。观察桶数组，5,4,6这三个数字在3的后面，那么把他们桶数组对应的值相加，就是3所贡献的答案，即t[4] + t[5] + t[6] = 3。这就是在求区间和，可以用上树状数组。</p>
+
+<p>因为将元素从左到右依次读入，所以桶数组所记录的，只是已读入的数组。当前元素右边的数仍未读入，所以不会影响答案（答案求的是，对于一个元素，求左边比它大的元素的个数）。</p>
+
+<p>然而，这里有一个运用桶数组司空见惯的问题。数列中的数字不超过1e9，桶数组装不下，所以要用到离散化。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="n">sort</span><span class="p">(</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="p">);</span>
+<span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> 
+                <span class="n">c</span><span class="p">[</span><span class="n">j</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> <span class="c1">// 去重</span>
+<span class="n">m</span><span class="o">--</span><span class="p">;</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lower_bound</span><span class="p">(</span><span class="n">c</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="o">+</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">c</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>解释:</p>
+
+<ol>
+  <li>a数组为原数组，存储了原始值。不能直接在a数组上操作，因为生成索引后，还要根据原始值的大小，来决定分到哪个索引。要保持元素的顺序不变。</li>
+  <li>将b数组排序、去重后得到了c数组。排序是为了得到索引。去重可以优化离散化。比如，有1000个相同的数，如果不去重，那么将会生成1000个索引。但是去重后只用生成1个即可。</li>
+  <li>对于每个a[i]，在c数组中找到它的位置。lower_bound(f.begin, f.end, value)，就是在数组f的区间[f.begin, f.end]中，找到第一个大于或等于value的元素。</li>
+  <li>减去c（数组首地址）得到该元素在c数组中的索引。</li>
+</ol>
+
+<p>一个例子：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>原数组 60  100 40  30  200
+离散化 3   4   2   1   5
+</code></pre></div></div>
+
+<p>在离散化后的数组上，再使用上述的思路，就可解决此题。</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[树状数组(Binary Indexed Tree) 12 Sep 2025]]></summary></entry><entry><title type="html">单调队列(Monotonic Queue)</title><link href="http://localhost:4000/2025/08/17/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97Monotonic-Queue.html" rel="alternate" type="text/html" title="单调队列(Monotonic Queue)" /><published>2025-08-17T00:00:00+08:00</published><updated>2025-08-17T00:00:00+08:00</updated><id>http://localhost:4000/2025/08/17/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97Monotonic%20Queue</id><content type="html" xml:base="http://localhost:4000/2025/08/17/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97Monotonic-Queue.html"><![CDATA[<h1 id="单调队列monotonic-queue">单调队列(Monotonic Queue)</h1>
 <p class="meta">17 Aug 2025</p>
 
 <p><strong>1.简介</strong></p>
