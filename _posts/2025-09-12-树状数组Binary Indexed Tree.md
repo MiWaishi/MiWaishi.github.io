@@ -57,6 +57,7 @@ lowbit(x) = x & -x，-x在运算过程中，其形式是补码（存储过程中
 通过这样的运算，可以得到最低位的1后后面的0组成的数。
  <p></p>
 ```c
+
 int lowbit(int x) {
   	return x & -x;
 }
@@ -76,6 +77,7 @@ int lowbit(int x) {
 
  <p></p>
 ```c
+
 int query(int x) {
   	int sum = 0;
   	while(x >= 1) {
