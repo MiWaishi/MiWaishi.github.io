@@ -219,8 +219,8 @@ int main() {
 
 ```
 
-input								output
-6									11
+input						output
+6						11
 5 4 2 6 3 1
 
 ```
