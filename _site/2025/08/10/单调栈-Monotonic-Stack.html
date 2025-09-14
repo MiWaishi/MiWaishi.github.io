@@ -56,10 +56,14 @@ var WRInitTime=(new Date()).getTime();
 \(数据范围:n \leq 3 \times 10^6\)
 。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a[]: 1 4 2 3 5
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+a[]: 1 4 2 3 5
+
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>f(): 2 5 4 5 0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+f(): 2 5 4 5 0
+
 </code></pre></div></div>
 
 <p>样例解释：</p>
@@ -79,7 +83,8 @@ var WRInitTime=(new Date()).getTime();
   <li>再将当前元素 (的下标) 加入栈中。</li>
 </ul>
 
-<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span><span class="cp">
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span><span class="cp">
 </span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
 <span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">3000010</span><span class="p">];</span>
@@ -100,12 +105,15 @@ var WRInitTime=(new Date()).getTime();
 		<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
 	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
+
 </code></pre></div></div>
 
 <p><strong>程序运行过程：</strong></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a[]:   1 4 2 3 5
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+a[]:   1 4 2 3 5
 index: 1 2 3 4 5
+
 </code></pre></div></div>
 
 <ul>
@@ -131,7 +139,9 @@ index: 1 2 3 4 5
 
 <p>最后，上文在解释时为了方便，都把入栈的操作说成是“一个元素入栈”。实际上是“元素的下标”入栈，因为题目求的是下标。而且在调用栈顶元素时，要记得要当做下标来用。如：</p>
 
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="p">[</span><span class="n">stk</span><span class="p">.</span><span class="n">back</span><span class="p">()]</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="n">a</span><span class="p">[</span><span class="n">stk</span><span class="p">.</span><span class="n">back</span><span class="p">()]</span>
+
 </code></pre></div></div>
 
 <p><strong>3.变形</strong></p>
@@ -148,9 +158,11 @@ index: 1 2 3 4 5
 \(\sum_{i=1}^{n} c_i \times a_i\)
 另外，求具体如何求区间数呢？需要从左到右，从右到左跑两遍单调栈，对于每一个元素，分别求左边第一个更大的元素，和右边第一个更大的元素。这样确定了最大的区间，但不是我们想要的。我们想要的是所有的区间数。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        4   8   3   5   7   1   9   6
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        4   8   3   5   7   1   9   6
             l           i       r
 index   1   2   3   4   5   6   7   8
+
 </code></pre></div></div>
 <p>比如，在此数列中，对于元素7，在跑两遍单调栈后，我们得到对于7的最大区间，左端点为8，右端点为9 (不包括端点)。    那么c[i] = (i - l) * (r - i)。其中，对于所有可能区间，i - l 表示了左端点的所有可能，r - i表示了右端点的算有可能。此公式可理解为一个排列问题。具体来看，对于7，c[7] = (5 - 2) * (7 - 5)  = 6。</p>
 
@@ -168,7 +180,9 @@ index   1   2   3   4   5   6   7   8
 
 <p>如何实现呢？已知输入代表了每个纸条的高度。对于每个数字，用单调栈，找到它左右第一个比它小的元素，求区间长度。用区间长度乘以纸条高度，就得到了当前高度的最大面积。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3 2 1 4 5 2
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+3 2 1 4 5 2
+
 </code></pre></div></div>
 
 <p>对于其他二维变形，可以把此题作为基础，将其他二维变形往这道题上去套，可能可以找到思路。</p>
