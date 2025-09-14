@@ -4,7 +4,7 @@
  <title>Tom Preston-Werner</title>
  <link href="http://tom.preston-werner.com/atom.xml" rel="self"/>
  <link href="http://tom.preston-werner.com/"/>
- <updated>2025-09-13T22:48:37+08:00</updated>
+ <updated>2025-09-14T12:57:17+08:00</updated>
  <id>http://tom.preston-werner.com/</id>
  <author>
    <name>Tom Preston-Werner</name>
@@ -32,7 +32,7 @@
 
 &lt;p&gt;将一段长度为n的区间拆成不多于&lt;strong&gt;logn段区间&lt;/strong&gt;。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/Users/stanchen/Desktop/fenwick.svg&quot; alt=&quot;fenwick&quot; style=&quot;zoom:80%;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/binindextree/fenwick.jpg&quot; alt=&quot;fenwick&quot; style=&quot;display: block; margin: 0 auto; max-width: 550px; max-height: 350px;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;这样处理各种问题效率要更高。如计算a[1…7]的和，过程：从c[7]开始往前跳，发现c[7]只管辖a[7]这个元素；然后找到c[6]，发现c[6]管辖a[5…6]；然后找到c[4]，发现c[4]管辖a[1…4]，然后再试图跳到c[0]，但实际上不存在，所以不跳了。因此答案为c[7]+c[6]+c[4]。&lt;/p&gt;
 

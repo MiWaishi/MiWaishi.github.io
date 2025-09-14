@@ -52,7 +52,7 @@ var WRInitTime=(new Date()).getTime();
 
 <p>将一段长度为n的区间拆成不多于<strong>logn段区间</strong>。</p>
 
-<p><img src="/Users/stanchen/Desktop/fenwick.svg" alt="fenwick" style="zoom:80%;" /></p>
+<p><img src="/images/binindextree/fenwick.jpg" alt="fenwick" style="display: block; margin: 0 auto; max-width: 550px; max-height: 350px;" /></p>
 
 <p>这样处理各种问题效率要更高。如计算a[1…7]的和，过程：从c[7]开始往前跳，发现c[7]只管辖a[7]这个元素；然后找到c[6]，发现c[6]管辖a[5…6]；然后找到c[4]，发现c[4]管辖a[1…4]，然后再试图跳到c[0]，但实际上不存在，所以不跳了。因此答案为c[7]+c[6]+c[4]。</p>
 
