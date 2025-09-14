@@ -55,7 +55,7 @@ title: 树状数组(Binary Indexed Tree)
 lowbit(x) = x & -x，-x在运算过程中，其形式是补码（存储过程中也是）。
 
 通过这样的运算，可以得到最低位的1后后面的0组成的数。
-
+ <p></p>
 ```c
 int lowbit(int x) {
   	return x & -x;
@@ -74,7 +74,7 @@ int lowbit(int x) {
 2. x -= lowbit(x)，如果 x = 0说明已经跳到尽头;
 3. 将跳到的c求和。
 
-
+ <p></p>
 ```c
 int query(int x) {
   	int sum = 0;
