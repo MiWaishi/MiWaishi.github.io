@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-09-14T18:44:01+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">sun Blog Title</title><subtitle>A brief description of your blog.</subtitle><author><name>Your Name</name><email>your-email@example.com</email></author><entry><title type="html">树状数组(Binary Indexed Tree)</title><link href="http://localhost:4000/2025/09/12/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree.html" rel="alternate" type="text/html" title="树状数组(Binary Indexed Tree)" /><published>2025-09-12T00:00:00+08:00</published><updated>2025-09-12T00:00:00+08:00</updated><id>http://localhost:4000/2025/09/12/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary%20Indexed%20Tree</id><content type="html" xml:base="http://localhost:4000/2025/09/12/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree.html"><![CDATA[<h1 id="树状数组binary-indexed-tree">树状数组(Binary Indexed Tree)</h1>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-09-14T22:08:26+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">sun Blog Title</title><subtitle>A brief description of your blog.</subtitle><author><name>Your Name</name><email>your-email@example.com</email></author><entry><title type="html">树状数组(Binary Indexed Tree)</title><link href="http://localhost:4000/2025/09/12/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree.html" rel="alternate" type="text/html" title="树状数组(Binary Indexed Tree)" /><published>2025-09-12T00:00:00+08:00</published><updated>2025-09-12T00:00:00+08:00</updated><id>http://localhost:4000/2025/09/12/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary%20Indexed%20Tree</id><content type="html" xml:base="http://localhost:4000/2025/09/12/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree.html"><![CDATA[<h1 id="树状数组binary-indexed-tree">树状数组(Binary Indexed Tree)</h1>
 <p class="meta">12 Sep 2025</p>
 
 <p><strong>1.简介</strong></p>
@@ -54,8 +54,7 @@
 
 <p>通过这样的运算，可以得到最低位的1后后面的0组成的数。</p>
 <p></p>
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="kt">int</span> <span class="nf">lowbit</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">lowbit</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
   	<span class="k">return</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">x</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
@@ -75,8 +74,7 @@
 </ol>
 
 <p></p>
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="kt">int</span> <span class="nf">query</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">query</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
   	<span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
   	<span class="k">while</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
 		<span class="n">sum</span> <span class="o">+=</span> <span class="n">c</span><span class="p">[</span><span class="n">x</span><span class="p">];</span>
