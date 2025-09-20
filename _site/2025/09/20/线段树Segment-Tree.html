@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <title>线段树(Segment Tree)</title>
+   <meta name="author" content="Sitan Chen />
+   <link href="http://feeds.feedburner.com/tom-preston-werner" rel="alternate" title="Sitan Chen" type="application/atom+xml" />
+   <meta name="readability-verification" content="QCzSs992GxmRYRKVpPeZ6LE2tS8aYKxsSSQKV8YM"/>
+
+   <!-- syntax highlighting CSS -->
+   <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+   <!-- Homepage CSS -->
+   <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+
+   <!-- Typekit -->
+   <script type="text/javascript" src="http://use.typekit.com/jpd0pfm.js"></script>
+   <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  
+   <!-- Mathjax -->
+   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+   
+</head>
+<body>
+
+<!-- ClickTale Top part -->
+<script type="text/javascript">
+var WRInitTime=(new Date()).getTime();
+</script>
+<!-- ClickTale end of Top part -->
+
+<div class="site">
+  <div class="title">
+    <a href="/">Sitan Chen</a>
+    <a class="extra" href="/">home</a>
+  </div>
+
+  <div id="post">
+<h1 id="线段树segment-tree">线段树(Segment Tree)</h1>
+<p class="meta">20 Sep 2025</p>
+
+<p><strong>1.简介</strong></p>
+
+<ul>
+  <li>是用于维护区间信息的数据结构。</li>
+  <li>可进行动态的区间查询（单点修改，区间修改，区间查询）。</li>
+  <li>可以用树状数组做的题，都可以用线段树；可以用线段树做的题，不一定能用树状数组。</li>
+</ul>
+
+<p><strong>2.原理及实现</strong></p>
+
+<p>线段树是一种二叉树，除去最底层是一棵完全二叉树。每一个节点代表一段区间，最底层的节点代表单个元素。父节点通过子节点的运算得来，如相加、求最大值等。</p>
+
+<figure style="text-align: center;">
+    <img src="/images/segmenttree/p1.jpg" alt="p1" style="display: block; margin: 0 auto;" />
+    <figcaption style="text-align: center; margin-top: -20px;">图1</figcaption> 
+
+</figure>
+
+<p>如图1所示，线段树记录了一个为[10, 11, 12, 13, 14]的数组，父节点由子节点求和得到。</p>
+
+<p>不难发现，一个二叉树中，对于第n个节点，其左子节点编号为2n，右子节点编号为 2n+1。</p>
+
+<p><strong>2.1 建树</strong></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">build</span><span class="p">(</span><span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pl</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pr</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 当前节点标号，以及其对应区间</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">pl</span> <span class="o">==</span> <span class="n">pr</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">pl</span><span class="p">];</span> <span class="c1">// 抵达最底层，赋值</span>
+                    <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">pl</span> <span class="o">+</span> <span class="n">pr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+        <span class="n">build</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="n">pl</span><span class="p">,</span> <span class="n">mid</span><span class="p">);</span>
+        <span class="n">build</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">pr</span><span class="p">);</span>
+        <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">tree</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">]</span> <span class="o">+</span> <span class="n">tree</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span> <span class="c1">// 重要赋值语句</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>采用递归的方法，从根节点开始，函数每次都向下一级传入当前节点编号、当前节点对应的区间。因此以如下形式调用。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">build</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>当递归到二叉树最底层时停止递归，具体的判断条件为当前节点对应的区间长度为1（左端点=右端点）。触发此条件时，还把最底层的节点赋值。</p>
+
+<p>若还未到树的最底层，那么就开始向两个子节点递归，传入两个子节点对应的编号和区间。</p>
+
+<p>巧妙的地方是，在两行递归代码的下面是给当前节点赋值的语句。因为它上面的递归回到当前这一层时，当前的节点的两个子节点已经赋好值了，所以此时可以把两个子节点的值拿来计算。</p>
+
+<p><strong>2.2 区间询问</strong></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// p是当前节点,[pl,pr]是对应区间,[l,r]为目标区间</span>
+<span class="kt">int</span> <span class="nf">query</span><span class="p">(</span><span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pl</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">pl</span> <span class="o">&gt;=</span> <span class="n">l</span> <span class="o">&amp;&amp;</span> <span class="n">pr</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">)</span> <span class="k">return</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">];</span>
+        <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">pl</span> <span class="o">+</span> <span class="n">pr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>	
+        <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">mid</span> <span class="o">&gt;=</span> <span class="n">l</span><span class="p">)</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">query</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="n">pl</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">mid</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">)</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">query</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">pr</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">sum</span><span class="p">;</span> 
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>询问同样使用递归，并且从根节点开始向下搜索。因此以如下形式调用。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">query</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>如果当前节点的区间在目标区间之内，那么就不用再向下搜索了，可以直接返回当前节点对应的值。这就是树状数组区间查询节约时间的地方。</p>
+
+<p>接下来递归即可，但要判断当前区间与目标区间的位置关系，两个if语句起到了这个作用。mid是当前区间的正中间。</p>
+
+<p>若mid在目标区间左端点L的左边，那么证明区间[pl, mid]包含了目标区间的一部分，故需要搜索，如图2所示。</p>
+
+<figure style="text-align: center;">
+    <img src="/images/segmenttree/p2.jpg" alt="p2" style="display: block; margin: 0 auto;" />
+    <figcaption style="text-align: center; margin-top: -10px;">图2</figcaption> 
+
+</figure>
+
+<p>若mid+1在目标区间右端点R的左边，那么证明区间[mid+1, pr]包含了目标区间的一部分，故需要搜索，如图3所示。</p>
+
+<figure style="text-align: center;">
+    <img src="/images/segmenttree/p3.jpg" alt="p3" style="display: block; margin: 0 auto;" />
+    <figcaption style="text-align: center; margin-top: -10px;">图3</figcaption> 
+
+</figure>
+
+<p><strong>2.3 单点修改</strong></p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// p为当前节点，[pl,pr]为当前对应区间，目标是将第x个元素加上k</span>
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pl</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">pl</span> <span class="o">==</span> <span class="n">pr</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">+=</span> <span class="n">k</span><span class="p">;</span>
+                <span class="k">return</span> <span class="p">;</span>
+        <span class="p">}</span>
+        <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">pl</span> <span class="o">+</span> <span class="n">pr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">mid</span><span class="p">)</span> <span class="n">update</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">pl</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="n">update</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">pr</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">);</span>
+        <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>本质上单点修改和建树是一模一样的。</p>
+
+<p><strong>2.4 区间修改与懒惰标记</strong></p>
+
+<p>若用利用单点修改来进行区间修改，则需将区间内每个元素遍历一遍，那么时间复杂度将会很高。</p>
+
+<p>所以引入<strong>懒惰标记</strong>。懒惰标记就是延迟对节点信息的更改。对于一段长度为n、需要修改的区间，通过线段树的特性，可以用少于n个的t[i]来表示这段区间。对于要修改的信息，只把它保存在每个t[i]之上，而不更新到每个t[i]的子节点上。直到下一次访问到标记过的节点，再进行实质性的修改。</p>
+
+<p>在树上搜索的同时，完成懒惰标记的实现。</p>
+
+<ol>
+  <li>
+    <p>从根节点开始搜索。</p>
+  </li>
+  <li>
+    <p>如果当前区间为目标区间的某个子集时，这意味着区间修改对当前节点有效，那么修改当前节点的值（p表示当前节点编号）t[p] += (pr - pl + 1) * k。同时更新懒惰标记tag[p] += k。</p>
+  </li>
+  <li>
+    <p>如上文所说，<em>直到下一次访问到标记了的节点，再进行实质性的修改</em></p>
+
+    <p>每当访问到一个节点时，就要判断是否有标记。如果有标记的话，就把标记的信息传递到它的两个子节点上，并把当前节点的标记删去。</p>
+  </li>
+  <li>
+    <p>最后再对比区间关系，进行递归。</p>
+  </li>
+</ol>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pl</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>	
+        <span class="k">if</span><span class="p">(</span><span class="n">pl</span> <span class="o">&gt;=</span> <span class="n">l</span> <span class="o">&amp;&amp;</span> <span class="n">pr</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 当前区间为目标区间的子集</span>
+                <span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">+=</span> <span class="n">k</span><span class="p">;</span>
+                <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pr</span> <span class="o">-</span> <span class="n">pl</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">k</span><span class="p">;</span>
+                <span class="k">return</span> <span class="p">;</span>
+        <span class="p">}</span>
+        <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">pl</span> <span class="o">+</span> <span class="n">pr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">])</span> <span class="p">{</span>
+                <span class="n">tag</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">]</span> <span class="o">+=</span> <span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">];</span>
+                <span class="n">tag</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">];</span> <span class="c1">// 把标记传递给两个子节点</span>
+                <span class="n">tree</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">mid</span> <span class="o">-</span> <span class="n">pl</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">];</span>
+                <span class="n">tree</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pr</span> <span class="o">-</span> <span class="n">mid</span><span class="p">)</span> <span class="o">*</span> <span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">];</span> <span class="c1">// 修改两个子节点的值</span>
+                <span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">l</span> <span class="o">&lt;=</span> <span class="n">mid</span><span class="p">)</span> <span class="n">update</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">pl</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">r</span> <span class="o">&gt;=</span> <span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="n">update</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">pr</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">);</span> <span class="c1">// 递归</span>
+        <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>例如，对于一个 10,11,12,13,14 的数组，在[3,5]的区间内，每个数字都加上5，如图4所示。</p>
+
+<figure style="text-align: center;">
+    <img src="/images/segmenttree/p4.jpg" alt="p4" style="display: block; margin: 0 auto;" />
+    <figcaption style="text-align: center; margin-top: -20px;">图4</figcaption> 
+</figure>
+
+<ol>
+  <li>从根节点开始搜索，找到了[3,3]和[4,5]，分别对应第5和第3个节点。给这两个节点打上标记，并修改值。</li>
+  <li>找到之后递归函数还返回前几层，从而更新对应的节点值（如1号节点，2号节点，3号节点的值都会被更新，通过将两个子节点求和）。</li>
+</ol>
+
+<p>修改完成后，线段树如图5所示：</p>
+
+<figure style="text-align: center;">
+    <img src="/images/segmenttree/p5.jpg" alt="p5" style="display: block; margin: 0 auto;" />
+    <figcaption style="text-align: center; margin-top: -30px;">图5</figcaption> 
+</figure>
+
+<p>延迟修改节点信息是如何体现的？比如，当前的树状数组，第6、第7个节点的信息还未更新，而他们是属于[3,5]区间内的。他们在下一次被访问到的时候会被更新。</p>
+
+<p>比如：查询[4,4]区间。</p>
+
+<ol>
+  <li>在搜索到第三个节点时（区间[4,5]），发现该节点有标记。</li>
+  <li>标记传递给两个子节点，并修改两个子节点的值。</li>
+  <li>将当前节点的标记删除。</li>
+</ol>
+
+<p>在全知的角度来看，把标记传递给第6、7节点没有用处，因为它们已经没有子节点了。但是在搜索的过程中，无法知晓是否有子节点，所以还是需要将标记传递给第6、7节点，如图6所示。</p>
+
+<figure style="text-align: center;">
+    <img src="/images/segmenttree/p6.jpg" alt="p6" style="display: block; margin: 0 auto;" />
+    <figcaption style="text-align: center; margin-top: -40px;">图6</figcaption> 
+</figure>
+<p>若使用懒惰标记，询问的代码也需要进行修改。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">query</span><span class="p">(</span><span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pl</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">pl</span> <span class="o">&gt;=</span> <span class="n">l</span> <span class="o">&amp;&amp;</span> <span class="n">pr</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">)</span> <span class="k">return</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">];</span> <span class="c1">// 当前区间为目标区间的子集</span>
+        <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">pl</span> <span class="o">+</span> <span class="n">pr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">])</span> <span class="p">{</span>
+                <span class="n">tag</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">]</span> <span class="o">+=</span> <span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">];</span>
+                <span class="n">tag</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">];</span> <span class="c1">// 传递标记给两个子节点</span>
+                <span class="n">tree</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">mid</span> <span class="o">-</span> <span class="n">pl</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">];</span>
+                <span class="n">tree</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pr</span> <span class="o">-</span> <span class="n">mid</span><span class="p">)</span> <span class="o">*</span> <span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">];</span> <span class="c1">// 修改两个子节点的值</span>
+                <span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">mid</span> <span class="o">&gt;=</span> <span class="n">l</span><span class="p">)</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">query</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="n">pl</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">mid</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">)</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">query</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">pr</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span> <span class="c1">// 递归</span>
+        <span class="k">return</span> <span class="n">sum</span><span class="p">;</span> 
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>3.例题</strong></p>
+
+<p>Example 1 <a href="https://www.luogu.com.cn/problem/P2357#submit">洛谷P2357</a></p>
+
+<p>无难度，一道板子题。区间修改和区间询问，需要用到懒惰标记。</p>
+
+<p>对于主墓碑（单点修改），看作[1,1]的区间来调用就行了。</p>
+
+<p>Example 2 <a href="https://www.luogu.com.cn/problem/P2574">洛谷P2574</a></p>
+
+<p>对于一个长度为n只包括0或1的数列：修改操作为将0变为1、将1变为0，查询操作为找到目标区间内1的数量。</p>
+
+<p>此题中，t数组表示对应区间的和，即1的个数。</p>
+
+<p>修改操作的实现：t[x]表示区间内1的数量。若将该区间反转，则t[x] = len - t[x]。这应该很好理解。</p>
+
+<p>tag数组的使用：若一个区间反转两次则相当于没有反转。令tag[x] = 1表示需要反转，tag[x] = 0表示不需要。每次进行修改时，令tag[x] = !tag[x]。</p>
+
+<p>最后一点，输入是要注意输入的是一个字符串，需要处理。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//修改和查询的代码</span>
+<span class="kt">void</span> <span class="nf">update_tag</span><span class="p">()</span> <span class="p">{</span>
+  	<span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">!</span><span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="p">];</span>
+	<span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">!</span><span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span> <span class="c1">// 不同之处</span>
+	<span class="n">tree</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">mid</span> <span class="o">-</span> <span class="n">pl</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">tree</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">];</span>
+	<span class="n">tree</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">pr</span> <span class="o">-</span> <span class="n">mid</span><span class="p">)</span> <span class="o">-</span> <span class="n">tree</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span> <span class="c1">// 不同之处</span>
+	<span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pl</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span><span class="p">(</span><span class="n">pl</span> <span class="o">&gt;=</span> <span class="n">l</span> <span class="o">&amp;&amp;</span> <span class="n">pr</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="o">!</span><span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">];</span> <span class="c1">// 不同之处</span>
+		<span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">pr</span> <span class="o">-</span> <span class="n">pl</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">];</span> <span class="c1">// 不同之处</span>
+		<span class="k">return</span> <span class="p">;</span>
+	<span class="p">}</span>
+	<span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">pl</span> <span class="o">+</span> <span class="n">pr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+	<span class="k">if</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">])</span> <span class="n">update_tag</span><span class="p">();</span>
+	<span class="n">recursion1</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">query</span><span class="p">(</span><span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pl</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span><span class="p">(</span><span class="n">pl</span> <span class="o">&gt;=</span> <span class="n">l</span> <span class="o">&amp;&amp;</span> <span class="n">pr</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">)</span> <span class="k">return</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">];</span>
+	<span class="k">if</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="n">p</span><span class="p">])</span> <span class="n">update_tag</span><span class="p">();</span>
+	<span class="n">recursion2</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Example 3 <a href="https://www.luogu.com.cn/problem/P1198">洛谷P1198</a></p>
+
+<p>简单变式，将求和改为求最大值即可。</p>
+
+</div>
+
+<div id="related">
+  <h2>Related Posts</h2>
+  <ul class="posts">
+    
+      <li><span>12 Sep 2025</span> &raquo; <a href="/2025/09/12/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree.html">树状数组(Binary Indexed Tree)</a></li>
+    
+      <li><span>17 Aug 2025</span> &raquo; <a href="/2025/08/17/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97Monotonic-Queue.html">单调队列(Monotonic Queue)</a></li>
+    
+      <li><span>10 Aug 2025</span> &raquo; <a href="/2025/08/10/%E5%8D%95%E8%B0%83%E6%A0%88-Monotonic-Stack.html">单调栈 (Monotonic Stack)</a></li>
+    
+  </ul>
+</div>
+
+  <div class="footer">
+    <div class="contact">
+      <p>
+        Sitan Chen
+        <br />
+        If you have the same hobbies, you can contact me. 
+        <br />
+        stanchenx@outlook.com
+      </p>
+    </div>
+    <div class="contact">
+      <p>
+        <a href="http://github.com/miwaishi/">github.com/miwaishi</a><br />
+        
+      </p>
+    </div>
+    <div class="rss">
+      
+        <img src="/images/rss.png" alt="Subscribe to RSS Feed" />
+      </a>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ClickTale Bottom part -->
+<div id="ClickTaleDiv" style="display: none;"></div>
+<script type="text/javascript">
+if(document.location.protocol!='https:')
+  document.write(unescape("%3Cscript%20src='http://s.clicktale.net/WRb.js'%20type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+if(typeof ClickTale=='function') ClickTale(206,0.3,"www03");
+</script>
+<!-- ClickTale end of Bottom part -->
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-6016902-1");
+pageTracker._trackPageview();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv">Total visits to this site: <span id="busuanzi_value_site_pv"></span> times</span>
+<!-- Google Analytics end -->
+
+<div>
+   <br><br><br><br> <!-- 添加空行 -->
+</div>
+</body>
+
+</html>
