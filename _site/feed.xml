@@ -1,4 +1,66 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-09-20T22:34:44+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">sun Blog Title</title><subtitle>A brief description of your blog.</subtitle><author><name>Your Name</name><email>your-email@example.com</email></author><entry><title type="html">线段树(Segment Tree)</title><link href="http://localhost:4000/2025/09/20/%E7%BA%BF%E6%AE%B5%E6%A0%91Segment-Tree.html" rel="alternate" type="text/html" title="线段树(Segment Tree)" /><published>2025-09-20T00:00:00+08:00</published><updated>2025-09-20T00:00:00+08:00</updated><id>http://localhost:4000/2025/09/20/%E7%BA%BF%E6%AE%B5%E6%A0%91Segment%20Tree</id><content type="html" xml:base="http://localhost:4000/2025/09/20/%E7%BA%BF%E6%AE%B5%E6%A0%91Segment-Tree.html"><![CDATA[<h1 id="线段树segment-tree">线段树(Segment Tree)</h1>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-10-06T23:17:12+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">sun Blog Title</title><subtitle>A brief description of your blog.</subtitle><author><name>Your Name</name><email>your-email@example.com</email></author><entry><title type="html">哈希(Hash)</title><link href="http://localhost:4000/2025/10/06/%E5%93%88%E5%B8%8CHash.html" rel="alternate" type="text/html" title="哈希(Hash)" /><published>2025-10-06T00:00:00+08:00</published><updated>2025-10-06T00:00:00+08:00</updated><id>http://localhost:4000/2025/10/06/%E5%93%88%E5%B8%8CHash</id><content type="html" xml:base="http://localhost:4000/2025/10/06/%E5%93%88%E5%B8%8CHash.html"><![CDATA[<h1 id="哈希hash">哈希(Hash)</h1>
+<p class="meta">20 Sep 2025</p>
+
+<p>1.<strong>简介</strong></p>
+
+<ul>
+  <li>哈希的本质是从一个相对较大范围到相对较小范围的映射，这样方便进行比较。</li>
+  <li>哈希最直接的应用是判断两个字符串是否相同，比较时间为O(1)。</li>
+  <li>两个性质：1. hash值不一样时，两个字符串不一样   2. hash值一样时，两个字符串大概率一样。</li>
+  <li>将hash值相同但原字符串不同的情况称为哈希碰撞。</li>
+</ul>
+
+<p>2.<strong>原理</strong></p>
+
+<p>对于一个字符串，将其转化为一个数字。若两个数字不同，则它们对应的原字符串不相同；若两个数字相同，则它们对应的原字符串大概率是相同的。</p>
+
+<p>通常选择将字符串转化为基（即进制）为131或13331的数字，并且对一个数M取模（M通常选择大质数，如1e9+537）就得到了对应的hash值。基和M若选择质数，那么哈希碰撞的概率会大大降低。</p>
+
+<p>3.<strong>实现</strong></p>
+
+<p>通过模拟的方式，将字符串转化为131进制数。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">Hash</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">const</span> <span class="kt">int</span> <span class="n">base</span> <span class="o">=</span> <span class="mi">131</span><span class="p">;</span>
+	<span class="k">const</span> <span class="kt">int</span> <span class="n">M</span> <span class="o">=</span> <span class="mf">1e9</span> <span class="o">+</span> <span class="mi">537</span><span class="p">;</span>
+	<span class="kt">int</span> <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="n">c</span> <span class="o">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">res</span> <span class="o">*</span> <span class="n">base</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span><span class="p">;</span>
+		<span class="n">res</span> <span class="o">%=</span> <span class="n">M</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>但是这样在多次判断字符串是否相同时，时间复杂度会较高。如果求一个字符串子串的哈希值，操作也会很麻烦。因此可以维护一个前缀数组h，h[i]表示字符串前i个字符（即s[1—-i]）对应的哈希值。同时也维护一个幂数组g，g[i]存储的是base的i次方模M的值。幂数组用于计算子串哈希值。</p>
+
+<p>预处理如下，时间复杂度为O(n)。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">base</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">%</span> <span class="n">M</span><span class="p">;</span>
+		<span class="n">g</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">base</span><span class="p">)</span> <span class="o">%</span> <span class="n">M</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>提取下标从l到r的子串的哈希值，计算可以做到O(1)。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">auto</span> <span class="n">get</span> <span class="o">=</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">int</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">-</span> <span class="n">h</span><span class="p">[</span><span class="n">l</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">g</span><span class="p">[</span><span class="n">r</span> <span class="o">-</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="n">M</span> <span class="o">+</span> <span class="n">M</span><span class="p">)</span> <span class="o">%</span> <span class="n">M</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>此外，字符串下标从0开始，与数组从1开始不同，不方便处理，因此这样操作：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">s</span> <span class="o">=</span> <span class="s">" "</span> <span class="o">+</span> <span class="n">s</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>4.<strong>例题</strong></p>
+
+<p>Example 1 <a href="https://www.luogu.com.cn/problem/P10468">洛谷P10468</a></p>
+
+<p>题意：对于一个给定的字符串，有q次询问，每次询问给定两个原字符串的两个子串的范围，判断这两个子串是否相同。</p>
+
+<p>模版题，直接套入函数即可。</p>]]></content><author><name>Your Name</name><email>your-email@example.com</email></author><summary type="html"><![CDATA[哈希(Hash) 20 Sep 2025]]></summary></entry><entry><title type="html">线段树(Segment Tree)</title><link href="http://localhost:4000/2025/09/20/%E7%BA%BF%E6%AE%B5%E6%A0%91Segment-Tree.html" rel="alternate" type="text/html" title="线段树(Segment Tree)" /><published>2025-09-20T00:00:00+08:00</published><updated>2025-09-20T00:00:00+08:00</updated><id>http://localhost:4000/2025/09/20/%E7%BA%BF%E6%AE%B5%E6%A0%91Segment%20Tree</id><content type="html" xml:base="http://localhost:4000/2025/09/20/%E7%BA%BF%E6%AE%B5%E6%A0%91Segment-Tree.html"><![CDATA[<h1 id="线段树segment-tree">线段树(Segment Tree)</h1>
 <p class="meta">20 Sep 2025</p>
 
 <p><strong>1.简介</strong></p>
